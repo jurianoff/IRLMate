@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Zezwól na ruch HTTP dla Twitch i Kick -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">twitch.tv</domain>
+        <domain includeSubdomains="true">twitchcdn.net</domain>
+        <domain includeSubdomains="true">kick.com</domain>
+        <domain includeSubdomains="true">kickcdn.com</domain>
+    </domain-config>
+
+    <!-- Domyślna konfiguracja bezpieczeństwa -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
