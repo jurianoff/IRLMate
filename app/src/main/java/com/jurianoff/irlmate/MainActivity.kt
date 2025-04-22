@@ -27,6 +27,18 @@ import androidx.compose.animation.animateContentSize
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.jurianoff.irlmate.ui.settings.ThemeMode
+import com.jurianoff.irlmate.ui.settings.ThemeSettings
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
+
+
+
 
 
 
@@ -36,31 +48,43 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            StreamChatTheme {
-                val chatMessages = remember { mutableStateListOf<ChatMessage>() }
+            MainScreen()
+        }
+    }
+}
 
-                // Łączenie się z czatem w tle
-                LaunchedEffect(Unit) {
-                    launch(Dispatchers.IO) {
-                        println("🔥 Uruchamiam Twitch klienta")
-                        val twitchClient = TwitchChatClient(channelName = "jurianoff") {
-                            chatMessages.add(it)
-                        }
-                        twitchClient.connect()
-                    }
+@Composable
+fun MainScreen() {
+    val darkMode = ThemeSettings.darkMode
+    val isDarkTheme = when (darkMode) {
+        ThemeMode.DARK -> true
+        ThemeMode.LIGHT -> false
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+    }
 
-                    launch(Dispatchers.IO) {
-                        println("🔥 Uruchamiam Kick klienta")
-                        val kickClient = KickChatClient {
-                            chatMessages.add(it)
-                        }
-                        kickClient.connect()
-                    }
+    StreamChatTheme(useDarkTheme = isDarkTheme) {
+        val chatMessages = remember { mutableStateListOf<ChatMessage>() }
+
+        // Łączenie się z czatem w tle
+        LaunchedEffect(Unit) {
+            launch(Dispatchers.IO) {
+                println("🔥 Uruchamiam Twitch klienta")
+                val twitchClient = TwitchChatClient(channelName = "jurianoff") {
+                    chatMessages.add(it)
                 }
+                twitchClient.connect()
+            }
 
-                ChatApp(messages = chatMessages)
+            launch(Dispatchers.IO) {
+                println("🔥 Uruchamiam Kick klienta")
+                val kickClient = KickChatClient {
+                    chatMessages.add(it)
+                }
+                kickClient.connect()
             }
         }
+
+        ChatApp(messages = chatMessages)
     }
 }
 
@@ -91,8 +115,17 @@ fun ChatApp(messages: List<ChatMessage>) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("IRLMate") }
+                title = { Text("IRLMate") },
+                actions = {
+                    IconButton(onClick = { /* TODO: przejście do ustawień */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Ustawienia"
+                        )
+                    }
+                }
             )
+
         }
     ) { paddingValues ->
         Column(
@@ -290,3 +323,6 @@ fun ChatMessageItem(message: ChatMessage, modifier: Modifier = Modifier) {
         }
     }
 }
+
+
+

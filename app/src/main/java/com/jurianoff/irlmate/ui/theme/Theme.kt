@@ -15,11 +15,26 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = Color(0xFFF5F5F5),
 )
 
+private val LightColorScheme = lightColorScheme(
+    primary = Color(0xFF1E88E5),
+    secondary = Color(0xFFD81B60),
+    background = Color(0xFFFFFFFF),
+    surface = Color(0xFFF5F5F5),
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onBackground = Color.Black,
+    onSurface = Color.Black,
+)
 
 @Composable
-fun StreamChatTheme(content: @Composable () -> Unit) {
+fun StreamChatTheme(
+    useDarkTheme: Boolean = true, // domyślnie ciemny
+    content: @Composable () -> Unit
+) {
+    val colors = if (useDarkTheme) DarkColorScheme else LightColorScheme
+
     MaterialTheme(
-        colorScheme = DarkColorScheme,
+        colorScheme = colors,
         typography = Typography,
         content = content
     )
