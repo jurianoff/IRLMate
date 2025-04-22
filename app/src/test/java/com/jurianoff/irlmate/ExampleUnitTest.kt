@@ -1,4 +1,4 @@
-package com.example.streamchat
+package com.jurianoff.irlmate
 
 import org.junit.Test
 

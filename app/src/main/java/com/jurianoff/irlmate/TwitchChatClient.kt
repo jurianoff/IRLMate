@@ -1,9 +1,8 @@
-package com.example.streamchat
+package com.jurianoff.irlmate
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.*
-import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
 
 

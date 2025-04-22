@@ -1,12 +1,10 @@
-package com.example.streamchat
+package com.jurianoff.irlmate
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
-import java.text.SimpleDateFormat
-import java.util.*
 
 class KickChatClient(private val onMessageReceived: (ChatMessage) -> Unit) {
 

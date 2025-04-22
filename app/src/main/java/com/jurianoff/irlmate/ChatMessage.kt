@@ -1,4 +1,4 @@
-package com.example.streamchat
+package com.jurianoff.irlmate
 
 data class ChatMessage(
     val platform: String,

@@ -1,4 +1,4 @@
-package com.example.streamchat
+package com.jurianoff.irlmate
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,9 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.example.streamchat.ui.theme.StreamChatTheme
+import com.jurianoff.irlmate.ui.theme.StreamChatTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,10 +24,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.animateContentSize
-import com.example.streamchat.KickStatusChecker
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+
 
 
 
@@ -90,7 +91,7 @@ fun ChatApp(messages: List<ChatMessage>) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Multi-Chat: Twitch & Kick") }
+                title = { Text("IRLMate") }
             )
         }
     ) { paddingValues ->
@@ -150,60 +151,77 @@ fun StreamStatusBar(kickStatus: KickStreamStatus?, twitchStatus: TwitchStreamSta
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 8.dp)
+            .background(Color.Black)
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(horizontal = 16.dp, vertical = 10.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Status Kicka
-            Icon(
-                painter = painterResource(id = R.drawable.ic_kick_logo),
-                contentDescription = "Kick",
-                modifier = Modifier.size(20.dp),
-                tint = Color.Unspecified
+            // Kick Status
+            StatusBadge(
+                iconRes = R.drawable.ic_kick_logo,
+                isLive = kickStatus?.isLive,
+                viewers = kickStatus?.viewers,
+                platformColor = Color(0xFF53FC18)
             )
-            Spacer(modifier = Modifier.width(8.dp))
 
-            if (kickStatus == null) {
-                Text("Ładowanie statusu Kick...", style = MaterialTheme.typography.bodySmall)
-            } else {
-                val statusText = if (kickStatus.isLive) "🟢 Online" else "🔴 Offline"
-                val viewerText = if (kickStatus.isLive) " • 👥 ${kickStatus.viewers} widzów" else ""
-
-                Text(
-                    text = "$statusText$viewerText",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (kickStatus.isLive) Color(0xFF00C853) else Color.Red
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp)) // Przerwa między statusami
-
-            // Status Twitcha
-            Icon(
-                painter = painterResource(id = R.drawable.ic_twitch_logo),
-                contentDescription = "Twitch",
-                modifier = Modifier.size(20.dp),
-                tint = Color.Unspecified
+            // Twitch Status
+            StatusBadge(
+                iconRes = R.drawable.ic_twitch_logo,
+                isLive = twitchStatus?.isLive,
+                viewers = twitchStatus?.viewers,
+                platformColor = Color(0xFF9146FF)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-
-            if (twitchStatus == null) {
-                Text("Ładowanie statusu Twitch...", style = MaterialTheme.typography.bodySmall)
-            } else {
-                val statusText = if (twitchStatus.isLive) "🟢 Online" else "🔴 Offline"
-                val viewerText = if (twitchStatus.isLive) " • 👥 ${twitchStatus.viewers} widzów" else ""
-
-                Text(
-                    text = "$statusText$viewerText",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (twitchStatus.isLive) Color(0xFF9146FF) else Color.Red
-                )
-            }
         }
     }
 }
+
+@Composable
+fun StatusBadge(
+    iconRes: Int,
+    isLive: Boolean?,
+    viewers: Int?,
+    platformColor: Color
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .background(Color.DarkGray, RoundedCornerShape(12.dp))
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            modifier = Modifier.size(20.dp),
+            tint = Color.Unspecified
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+
+        if (isLive == null) {
+            Text(
+                text = "⏳ Ładowanie...",
+                color = Color.LightGray,
+                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold)
+            )
+        } else {
+            val statusText = if (isLive) "🟢 Online" else "🔴 Offline"
+            val viewerText = if (isLive) " • 👥 $viewers" else ""
+            val textColor = if (isLive) Color(0xFF00FF00) else Color(0xFFFF5555)
+
+            Text(
+                text = "$statusText$viewerText",
+                color = textColor,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+    }
+}
+
 
 
 

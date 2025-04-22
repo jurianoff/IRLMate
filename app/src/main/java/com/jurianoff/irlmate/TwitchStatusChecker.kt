@@ -1,4 +1,4 @@
-package com.example.streamchat
+package com.jurianoff.irlmate
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.streamchat"
+    namespace = "com.jurianoff.irlmate"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.streamchat"
+        applicationId = "com.jurianoff.irlmate"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
