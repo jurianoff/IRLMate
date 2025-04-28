@@ -1,40 +1,41 @@
 package com.jurianoff.irlmate.ui.theme
 
+import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF82AAFF),
-    secondary = Color(0xFFC792EA),
-    background = Color(0xFF2B2B2B),
-    surface = Color(0xFF3C3F41),
-    onPrimary = Color(0xFF1E1E1E),
-    onSecondary = Color(0xFF1E1E1E),
-    onBackground = Color(0xFFE0E0E0),
-    onSurface = Color(0xFFF5F5F5),
+    primary = Purple80,
+    secondary = PurpleGrey80,
+    tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF1E88E5),
-    secondary = Color(0xFFD81B60),
-    background = Color(0xFFFFFFFF),
-    surface = Color(0xFFF5F5F5),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
+    primary = Purple40,
+    secondary = PurpleGrey40,
+    tertiary = Pink40
 )
 
 @Composable
-fun StreamChatTheme(
-    useDarkTheme: Boolean = true, // domyślnie ciemny
+fun IRLMateTheme(
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (useDarkTheme) DarkColorScheme else LightColorScheme
+    val context = LocalContext.current
+    val colorScheme = when {
+        // Jeśli Android 12+ i dynamiczne kolory dostępne
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+        else -> {
+            if (useDarkTheme) DarkColorScheme else LightColorScheme
+        }
+    }
 
     MaterialTheme(
-        colorScheme = colors,
+        colorScheme = colorScheme,
         typography = Typography,
         content = content
     )

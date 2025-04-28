@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.jurianoff.irlmate.ui.theme.StreamChatTheme
+import com.jurianoff.irlmate.ui.theme.IRLMateTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,7 +62,7 @@ fun MainScreen() {
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
 
-    StreamChatTheme(useDarkTheme = isDarkTheme) {
+    IRLMateTheme(useDarkTheme = isDarkTheme) {
         val chatMessages = remember { mutableStateListOf<ChatMessage>() }
 
         // Łączenie się z czatem w tle

@@ -69,5 +69,5 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("androidx.compose.animation:animation:1.4.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
-
+    implementation("com.google.android.material:material:1.11.0")
 }
