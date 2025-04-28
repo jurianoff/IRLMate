@@ -1,4 +1,4 @@
-package com.jurianoff.irlmate
+package com.jurianoff.irlmate.data.model
 
 data class ChatMessage(
     val platform: String,
@@ -7,5 +7,3 @@ data class ChatMessage(
     val userColor: String? = null, // np. "#DEB2FF"
     val timestamp: String = "" // Domyślnie pusty, jeśli nie podano
 )
-
-

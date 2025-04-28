@@ -1,16 +1,15 @@
 package com.jurianoff.irlmate.ui.settings
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.Alignment // 💡 potrzebny import
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.ui.Alignment
 
-
-@OptIn(ExperimentalMaterial3Api::class) // 💡 wymagane do TopAppBar
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(onBack: () -> Unit) {
     Scaffold(
@@ -19,31 +18,64 @@ fun SettingsScreen(onBack: () -> Unit) {
                 title = { Text("Ustawienia") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Wróć")
+                        Icon(Icons.Default.Settings, contentDescription = "Wróć")
                     }
                 }
             )
         }
     ) { padding ->
-        Column(modifier = Modifier.padding(padding).padding(16.dp)) {
-            Text("Motyw aplikacji", style = MaterialTheme.typography.titleMedium)
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .padding(16.dp)
+                .fillMaxSize()
+        ) {
+            Text(
+                text = "Motyw aplikacji",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            ThemeModeOption(
+                title = "Tryb jasny",
+                description = "Używaj jasnego motywu",
+                selected = ThemeSettings.darkMode == ThemeMode.LIGHT,
+                onClick = { ThemeSettings.darkMode = ThemeMode.LIGHT }
+            )
 
-            ThemeMode.values().forEach { mode ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                ) {
-                    RadioButton(
-                        selected = ThemeSettings.darkMode == mode,
-                        onClick = { ThemeSettings.darkMode = mode }
-                    )
-                    Text(text = mode.name.lowercase().replaceFirstChar { it.uppercase() })
-                }
-            }
+            ThemeModeOption(
+                title = "Tryb ciemny",
+                description = "Używaj ciemnego motywu",
+                selected = ThemeSettings.darkMode == ThemeMode.DARK,
+                onClick = { ThemeSettings.darkMode = ThemeMode.DARK }
+            )
+
+            ThemeModeOption(
+                title = "Automatyczny",
+                description = "Dopasuj do ustawień systemowych",
+                selected = ThemeSettings.darkMode == ThemeMode.SYSTEM,
+                onClick = { ThemeSettings.darkMode = ThemeMode.SYSTEM }
+            )
         }
     }
+}
+
+@Composable
+private fun ThemeModeOption(
+    title: String,
+    description: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    ListItem(
+        headlineContent = { Text(title) },
+        supportingContent = { Text(description) },
+        trailingContent = {
+            RadioButton(
+                selected = selected,
+                onClick = onClick
+            )
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
 }

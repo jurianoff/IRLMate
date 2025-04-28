@@ -1,9 +1,17 @@
-package com.jurianoff.irlmate
+package com.jurianoff.irlmate.data.kick
 
+import com.jurianoff.irlmate.data.model.ChatMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class KickChatClient(private val onMessageReceived: (ChatMessage) -> Unit) {
@@ -49,8 +57,8 @@ class KickChatClient(private val onMessageReceived: (ChatMessage) -> Unit) {
                     val message = data.getString("content")
 
                     // Dodaj timestamp (HH:mm)
-                    val timestamp = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
-                        .format(java.util.Date())
+                    val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault())
+                        .format(Date())
 
                     onMessageReceived(
                         ChatMessage(

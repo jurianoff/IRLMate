@@ -1,4 +1,4 @@
-package com.jurianoff.irlmate
+package com.jurianoff.irlmate.data.kick
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,7 +24,8 @@ object KickStatusChecker {
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) return@withContext KickStreamStatus(false, null)
 
-                val body = response.body?.string() ?: return@withContext KickStreamStatus(false, null)
+                val body =
+                    response.body?.string() ?: return@withContext KickStreamStatus(false, null)
                 val json = JSONObject(body)
 
                 val livestream = json.optJSONObject("livestream")

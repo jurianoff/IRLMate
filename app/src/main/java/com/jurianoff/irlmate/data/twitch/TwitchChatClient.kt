@@ -1,10 +1,17 @@
-package com.jurianoff.irlmate
+package com.jurianoff.irlmate.data.twitch
 
+import com.jurianoff.irlmate.data.model.ChatMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
-
 
 class TwitchChatClient(
     private val channelName: String,
@@ -46,10 +53,11 @@ class TwitchChatClient(
                     if (line.contains("PRIVMSG")) {
                         val user = line.substringAfter("display-name=").substringBefore(";")
                         val message = line.substringAfter("PRIVMSG #$channelName :")
-                        val color = line.substringAfter("color=").substringBefore(";").ifBlank { null }
+                        val color =
+                            line.substringAfter("color=").substringBefore(";").ifBlank { null }
 
-                        val timestamp = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
-                            .format(java.util.Date())
+                        val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault())
+                            .format(Date())
 
                         onMessageReceived(
                             ChatMessage(

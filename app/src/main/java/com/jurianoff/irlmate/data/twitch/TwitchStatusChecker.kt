@@ -1,8 +1,9 @@
-package com.jurianoff.irlmate
+package com.jurianoff.irlmate.data.twitch
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.json.JSONObject
 
 data class TwitchStreamStatus(
@@ -27,7 +28,8 @@ object TwitchStatusChecker {
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) return@withContext TwitchStreamStatus(false, null)
 
-                val body = response.body?.string() ?: return@withContext TwitchStreamStatus(false, null)
+                val body =
+                    response.body?.string() ?: return@withContext TwitchStreamStatus(false, null)
                 val json = JSONObject(body)
                 val dataArray = json.getJSONArray("data")
 
