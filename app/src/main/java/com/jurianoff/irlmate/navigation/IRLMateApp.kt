@@ -14,6 +14,7 @@ import com.jurianoff.irlmate.ui.settings.ThemeSettings
 import com.jurianoff.irlmate.ui.theme.IRLMateTheme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun IRLMateApp() {
@@ -26,6 +27,11 @@ fun IRLMateApp() {
 
     IRLMateTheme(useDarkTheme = isDarkTheme) {
         val navController = rememberNavController()
+        val context = LocalContext.current
+
+        LaunchedEffect(Unit) {
+            ThemeSettings.loadTheme(context)
+        }
 
         NavHost(navController = navController, startDestination = "main") {
             composable("main") {

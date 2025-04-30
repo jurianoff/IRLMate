@@ -14,7 +14,6 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -31,43 +30,40 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-    buildFeatures {
-        compose = true
-    }
+    kotlinOptions { jvmTarget = "11" }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3" // lub nowsza wersja
+    buildFeatures { compose = true }
+
+    composeOptions {                     // compiler 1.5 ⇒ obsługuje Compose 1.5.x
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 }
 
 dependencies {
+    implementation(platform(libs.androidx.compose.bom))  // <-- tylko to zostaje
+    implementation(libs.androidx.foundation)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
+    // Compose — bez wersji!
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.ui.tooling)
+
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("androidx.webkit:webkit:1.9.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("com.google.android.material:material:1.11.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("androidx.webkit:webkit:1.9.0")
-    implementation("androidx.compose.material3:material3:1.1.1")
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation("androidx.compose.ui:ui:1.5.4")
-    implementation("androidx.compose.material3:material3:1.2.0")
-    implementation("androidx.activity:activity-compose:1.7.2")
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation("androidx.compose.animation:animation:1.4.0")
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("com.google.android.material:material:1.11.0")
 }
+
