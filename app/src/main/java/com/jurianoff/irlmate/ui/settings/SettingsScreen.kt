@@ -2,7 +2,7 @@ package com.jurianoff.irlmate.ui.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -23,7 +23,10 @@ fun SettingsScreen(onBack: () -> Unit) {
                 title = { Text("Ustawienia") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.Settings, contentDescription = "Wróć")
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Wstecz"
+                        )
                     }
                 }
             )

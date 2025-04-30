@@ -5,10 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.graphics.Color
 
-
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFBB86FC),
-    secondary = Color(0xFF03DAC6),
+    primary = Color(0xFFFF6D00),
+    secondary = Color(0xFFFF9100),
     background = Color(0xFF121212),
     surface = Color(0xFF1E1E1E),
     onPrimary = Color.Black,
@@ -18,14 +17,14 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF6200EE),
-    secondary = Color(0xFF03DAC6),
-    background = Color(0xFFF5F5F5), // jasne, przyjemne tło aplikacji
-    surface = Color(0xFFEFEFEF), // jaśniejszy szary dla kart (np. wiadomości)
+    primary = Color(0xFFFF6D00),
+    secondary = Color(0xFFFFA040),
+    background = Color(0xFFFAFAFA),
+    surface = Color(0xFFFFFFFF),
     onPrimary = Color.White,
     onSecondary = Color.Black,
     onBackground = Color.Black,
-    onSurface = Color.Black
+    onSurface = Color(0xFF212121)
 )
 
 @Composable

@@ -42,7 +42,8 @@ android {
 dependencies {
     implementation(platform(libs.androidx.compose.bom))  // <-- tylko to zostaje
     implementation(libs.androidx.foundation)
-
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
+    implementation("androidx.compose.material:material-icons-extended")
     // Compose — bez wersji!
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)

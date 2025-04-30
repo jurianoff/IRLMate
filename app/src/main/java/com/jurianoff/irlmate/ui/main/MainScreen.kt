@@ -1,14 +1,21 @@
 package com.jurianoff.irlmate.ui.main
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.jurianoff.irlmate.R
 import com.jurianoff.irlmate.data.kick.KickStatusChecker
 import com.jurianoff.irlmate.data.kick.KickStreamStatus
 import com.jurianoff.irlmate.data.model.ChatMessage
@@ -23,31 +30,29 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onSettingsClick: () -> Unit) {
+
+    /*────────────── 1. kolekcjonowanie wiadomości ──────────────*/
     val chatMessages = remember { mutableStateListOf<ChatMessage>() }
 
-    // Połączenia do czatu
     LaunchedEffect(Unit) {
         launch(Dispatchers.IO) {
-            val twitchClient = com.jurianoff.irlmate.data.twitch.TwitchChatClient(channelName = "jurianoff") {
+            com.jurianoff.irlmate.data.twitch.TwitchChatClient("jurianoff") {
                 chatMessages.add(it)
                 if (chatMessages.size > 100) chatMessages.removeAt(0)
-            }
-            twitchClient.connect()
+            }.connect()
         }
-
         launch(Dispatchers.IO) {
-            val kickClient = com.jurianoff.irlmate.data.kick.KickChatClient {
+            com.jurianoff.irlmate.data.kick.KickChatClient {
                 chatMessages.add(it)
                 if (chatMessages.size > 100) chatMessages.removeAt(0)
-            }
-            kickClient.connect()
+            }.connect()
         }
     }
 
+    /*────────────── 2. statusy streamów ──────────────*/
     var kickStatus by remember { mutableStateOf<KickStreamStatus?>(null) }
     var twitchStatus by remember { mutableStateOf<TwitchStreamStatus?>(null) }
 
-    // Odświeżanie co 10 sekund
     LaunchedEffect(Unit) {
         while (true) {
             kickStatus = KickStatusChecker.getStreamStatus()
@@ -56,25 +61,47 @@ fun MainScreen(onSettingsClick: () -> Unit) {
         }
     }
 
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    /*────────────── 3. układ responsywny ──────────────*/
+    val isLandscape =
+        LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     Scaffold(
         topBar = {
+
             TopAppBar(
-                title = { Text("IRLMate") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor          = MaterialTheme.colorScheme.surface,          // działa w obu motywach
+                    scrolledContainerColor  = MaterialTheme.colorScheme.surfaceVariant,   // lekki cień przy scrollu
+                    titleContentColor       = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor  = MaterialTheme.colorScheme.onSurface
+                ),
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(id = R.drawable.irlmate_logo),
+                            contentDescription = "IRLMate logo",
+                            modifier = Modifier
+                                .height(48.dp)
+                                .padding(end = 12.dp)
+                        )
+                        Text("IRLMate")
+                    }
+                },
                 actions = {
                     IconButton(onClick = onSettingsClick) {
-                        Icon(imageVector = Icons.Default.Settings, contentDescription = "Ustawienia")
+                        Icon(Icons.Default.Settings, contentDescription = "Ustawienia")
                     }
                 }
             )
+
+
         }
-    ) { paddingValues ->
+    ) { padding ->
         if (isLandscape) {
+            /*──────── layout w poziomie ────────*/
             Row(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(padding)
                     .fillMaxSize()
             ) {
                 Column(
@@ -82,13 +109,13 @@ fun MainScreen(onSettingsClick: () -> Unit) {
                         .weight(1f)
                         .padding(16.dp)
                 ) {
+                    /* logo przeniesione do TopAppBar – tutaj tylko statusy */
                     StreamStatusBar(
                         kickStatus = kickStatus,
                         twitchStatus = twitchStatus,
-                        vertical = true // będzie obsłużone w StreamStatusBar
+                        vertical = true
                     )
                 }
-
                 ChatList(
                     messages = chatMessages,
                     modifier = Modifier
@@ -97,9 +124,10 @@ fun MainScreen(onSettingsClick: () -> Unit) {
                 )
             }
         } else {
+            /*──────── layout w pionie ────────*/
             Column(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(padding)
                     .fillMaxSize()
             ) {
                 StreamStatusBar(
