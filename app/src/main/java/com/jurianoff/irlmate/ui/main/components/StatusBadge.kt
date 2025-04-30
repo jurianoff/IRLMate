@@ -42,7 +42,7 @@ fun StatusBadge(
             )
         } else {
             val statusText = if (isLive) "🟢 Online" else "🔴 Offline"
-            val viewerText = if (isLive) " • 👥 $viewers" else ""
+            val viewerText = if (isLive && viewers != null) " • 👥 $viewers" else ""
             val textColor = if (isLive) Color(0xFF00FF00) else Color(0xFFFF5555)
 
             Text(

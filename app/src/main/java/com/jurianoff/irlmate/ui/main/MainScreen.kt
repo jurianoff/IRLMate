@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 fun MainScreen(onSettingsClick: () -> Unit) {
     val chatMessages = remember { mutableStateListOf<ChatMessage>() }
 
-    // Łączenie z czatem
+    // Połączenia do czatu
     LaunchedEffect(Unit) {
         launch(Dispatchers.IO) {
             val twitchClient = com.jurianoff.irlmate.data.twitch.TwitchChatClient(channelName = "jurianoff") {
@@ -47,7 +47,7 @@ fun MainScreen(onSettingsClick: () -> Unit) {
     var kickStatus by remember { mutableStateOf<KickStreamStatus?>(null) }
     var twitchStatus by remember { mutableStateOf<TwitchStreamStatus?>(null) }
 
-    // Odświeżanie statusów co 10 sekund
+    // Odświeżanie co 10 sekund
     LaunchedEffect(Unit) {
         while (true) {
             kickStatus = KickStatusChecker.getStreamStatus()
@@ -61,16 +61,14 @@ fun MainScreen(onSettingsClick: () -> Unit) {
 
     Scaffold(
         topBar = {
-            if (!isLandscape) {
-                TopAppBar(
-                    title = { Text("IRLMate") },
-                    actions = {
-                        IconButton(onClick = onSettingsClick) {
-                            Icon(imageVector = Icons.Default.Settings, contentDescription = "Ustawienia")
-                        }
+            TopAppBar(
+                title = { Text("IRLMate") },
+                actions = {
+                    IconButton(onClick = onSettingsClick) {
+                        Icon(imageVector = Icons.Default.Settings, contentDescription = "Ustawienia")
                     }
-                )
-            }
+                }
+            )
         }
     ) { paddingValues ->
         if (isLandscape) {
@@ -84,21 +82,11 @@ fun MainScreen(onSettingsClick: () -> Unit) {
                         .weight(1f)
                         .padding(16.dp)
                 ) {
-                    Text(
-                        "IRLMate",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
                     StreamStatusBar(
                         kickStatus = kickStatus,
-                        twitchStatus = twitchStatus
+                        twitchStatus = twitchStatus,
+                        vertical = true // będzie obsłużone w StreamStatusBar
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = onSettingsClick) {
-                        Icon(imageVector = Icons.Default.Settings, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Ustawienia")
-                    }
                 }
 
                 ChatList(
