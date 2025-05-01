@@ -9,4 +9,5 @@ data class ChatMessage(
     val message: String,
     val userColor: String? = null,
     val timestamp: String = ""
+
 )

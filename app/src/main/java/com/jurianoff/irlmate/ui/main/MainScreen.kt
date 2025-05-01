@@ -26,7 +26,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun MainScreen(onSettingsClick: () -> Unit, viewModel: ChatViewModel = viewModel()) {
 
-    val messages by viewModel.messages.collectAsState()
+    val messages = viewModel.messages
 
     /*────────────── Statusy streamów ──────────────*/
     var kickStatus by remember { mutableStateOf<KickStreamStatus?>(null) }

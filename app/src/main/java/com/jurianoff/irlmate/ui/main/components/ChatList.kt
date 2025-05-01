@@ -92,7 +92,7 @@ fun ChatList(
             ) { _, message ->
                 ChatMessageItem(
                     message = message,
-                    modifier = Modifier.animateItem()
+
                 )
             }
         }

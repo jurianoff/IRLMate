@@ -20,10 +20,13 @@ fun StatusBadge(
     viewers: Int?,
     platformColor: Color
 ) {
+    // jedno źródło – zależne od aktywnego motywu aplikacji
+    val backgroundColor = MaterialTheme.colorScheme.surfaceVariant
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .background(Color.DarkGray, RoundedCornerShape(12.dp))
+            .background(backgroundColor, RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Icon(
@@ -37,13 +40,13 @@ fun StatusBadge(
         if (isLive == null) {
             Text(
                 text = "⏳ Ładowanie...",
-                color = Color.LightGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodySmall
             )
         } else {
             val statusText = if (isLive) "🟢 Online" else "🔴 Offline"
             val viewerText = if (isLive && viewers != null) " • 👥 $viewers" else ""
-            val textColor = if (isLive) Color(0xFF00FF00) else Color(0xFFFF5555)
+            val textColor = if (isLive) platformColor else MaterialTheme.colorScheme.error
 
             Text(
                 text = "$statusText$viewerText",
