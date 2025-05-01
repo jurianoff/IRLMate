@@ -1,8 +1,6 @@
 package com.jurianoff.irlmate.ui.main.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -15,7 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.jurianoff.irlmate.R
 import com.jurianoff.irlmate.data.model.ChatMessage
 import kotlinx.coroutines.launch
 import androidx.compose.animation.AnimatedVisibility
@@ -23,7 +23,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -68,8 +67,6 @@ fun ChatList(
         }
     }
 
-
-// Auto-scroll tylko przy nowej wiadomości
     LaunchedEffect(messages.size) {
         if (isAtBottom && messages.isNotEmpty()) {
             scope.launch {
@@ -77,7 +74,6 @@ fun ChatList(
             }
         }
     }
-
 
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
@@ -92,7 +88,6 @@ fun ChatList(
             ) { _, message ->
                 ChatMessageItem(
                     message = message,
-
                 )
             }
         }
@@ -104,8 +99,7 @@ fun ChatList(
                     .padding(16.dp)
             ) {
                 Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd),
+                    modifier = Modifier.align(Alignment.BottomEnd),
                     horizontalAlignment = Alignment.End
                 ) {
                     AnimatedVisibility(
@@ -118,11 +112,10 @@ fun ChatList(
                             shape = MaterialTheme.shapes.medium,
                             tonalElevation = 0.dp,
                             shadowElevation = 4.dp,
-                            modifier = Modifier
-                                .shadow(4.dp, shape = MaterialTheme.shapes.medium)
+                            modifier = Modifier.shadow(4.dp, shape = MaterialTheme.shapes.medium)
                         ) {
                             Text(
-                                text = "Nowe wiadomości",
+                                text = stringResource(R.string.new_messages),
                                 color = Color(0xFFFF9800),
                                 style = MaterialTheme.typography.labelMedium,
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
@@ -144,12 +137,13 @@ fun ChatList(
                             .padding(end = 12.dp, bottom = 16.dp)
                             .shadow(12.dp, shape = FloatingActionButtonDefaults.shape)
                     ) {
-                        Icon(Icons.Default.ArrowDownward, contentDescription = "Przewiń na dół")
+                        Icon(
+                            imageVector = Icons.Default.ArrowDownward,
+                            contentDescription = stringResource(R.string.scroll_down)
+                        )
                     }
-
                 }
             }
         }
-
     }
 }

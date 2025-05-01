@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jurianoff.irlmate.R
@@ -58,13 +59,13 @@ fun MainScreen(onSettingsClick: () -> Unit, viewModel: ChatViewModel = viewModel
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
                             painter = painterResource(id = R.drawable.irlmate_logo),
-                            contentDescription = "IRLMate logo",
+                            contentDescription = stringResource(R.string.app_name),
                             modifier = Modifier
                                 .height(48.dp)
                                 .padding(end = 12.dp)
                         )
                         Text(
-                            text = "IRLMate",
+                            text = stringResource(R.string.app_name),
                             style = MaterialTheme.typography.titleLarge.copy(
                                 shadow = Shadow(
                                     color = Color.Black.copy(alpha = 0.6f),
@@ -74,12 +75,14 @@ fun MainScreen(onSettingsClick: () -> Unit, viewModel: ChatViewModel = viewModel
                             ),
                             color = MaterialTheme.colorScheme.onSurface
                         )
-
                     }
                 },
                 actions = {
                     IconButton(onClick = onSettingsClick) {
-                        Icon(Icons.Default.Settings, contentDescription = "Ustawienia")
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = stringResource(R.string.settings)
+                        )
                     }
                 }
             )

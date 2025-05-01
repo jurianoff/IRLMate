@@ -22,10 +22,10 @@ import com.jurianoff.irlmate.data.model.ChatMessage
 @Composable
 fun ChatMessageItem(message: ChatMessage, modifier: Modifier = Modifier) {
 
-    // Stałe kolory tła – zależne od platformy, nie od motywu
+    // Stałe kolory tła dla platform
     val backgroundColor = when (message.platform.lowercase()) {
-        "twitch" -> Color(0xFF9146FF)
-        "kick"   -> Color(0xFF4CAF50)
+        "twitch" -> Color(0xFF9146FF) // Fiolet Twitch
+        "kick"   -> Color(0xFF4CAF50) // Zielony Kick
         else     -> MaterialTheme.colorScheme.surfaceVariant
     }
 
@@ -76,7 +76,7 @@ fun ChatMessageItem(message: ChatMessage, modifier: Modifier = Modifier) {
                 if (message.timestamp.isNotEmpty()) {
                     Text(
                         text = message.timestamp,
-                        style = MaterialTheme.typography.labelSmall,
+                        style = MaterialTheme.typography.labelSmall.copy(shadow = shadowEffect),
                         color = textColor.copy(alpha = 0.8f)
                     )
                 }

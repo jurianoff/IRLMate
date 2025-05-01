@@ -1,11 +1,7 @@
 package com.jurianoff.irlmate.ui.main.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -14,10 +10,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-
+import com.jurianoff.irlmate.R
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.geometry.Offset
 
 @Composable
 fun StatusBadge(
@@ -29,8 +35,8 @@ fun StatusBadge(
     val backgroundColor = MaterialTheme.colorScheme.surfaceVariant
 
     val textShadow = Shadow(
-        color = Color.Black.copy(alpha = 0.4f),
-        offset = androidx.compose.ui.geometry.Offset(1f, 1f),
+        color = Color.Black.copy(alpha = 0.5f),
+        offset = Offset(1f, 1f),
         blurRadius = 1f
     )
 
@@ -48,24 +54,27 @@ fun StatusBadge(
         )
         Spacer(modifier = Modifier.width(8.dp))
 
-        val styleWithShadow = MaterialTheme.typography.bodySmall.copy(shadow = textShadow)
-
-        if (isLive == null) {
-            Text(
-                text = "⏳ Ładowanie...",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = styleWithShadow
-            )
-        } else {
-            val statusText = if (isLive) "🟢 Online" else "🔴 Offline"
-            val viewerText = if (isLive && viewers != null) " • 👥 $viewers" else ""
-            val textColor = if (isLive) platformColor else MaterialTheme.colorScheme.error
-
-            Text(
-                text = "$statusText$viewerText",
-                color = textColor,
-                style = styleWithShadow
-            )
+        val statusText = when (isLive) {
+            null -> stringResource(R.string.status_loading)
+            true -> stringResource(R.string.status_online)
+            false -> stringResource(R.string.status_offline)
         }
+
+        val viewerText = if (isLive == true && viewers != null) {
+            " • " + stringResource(R.string.viewers, viewers)
+        } else ""
+
+        val textColor = when (isLive) {
+            true -> platformColor
+            false -> MaterialTheme.colorScheme.error
+            null -> MaterialTheme.colorScheme.onSurfaceVariant
+        }
+
+        Text(
+            text = statusText + viewerText,
+            color = textColor,
+            style = MaterialTheme.typography.bodySmall.copy(shadow = textShadow),
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }

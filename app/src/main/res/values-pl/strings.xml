@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">IRLMate</string>
+    <string name="settings">Ustawienia</string>
+    <string name="theme">Motyw</string>
+    <string name="light_theme">Tryb jasny</string>
+    <string name="dark_theme">Tryb ciemny</string>
+    <string name="system_theme">Automatyczny</string>
+    <string name="keep_screen_on">Nie wygaszaj ekranu</string>
+    <string name="keep_screen_on_desc">Zabezpiecza ekran przed wyłączaniem podczas działania aplikacji</string>
+    <string name="language">Język</string>
+    <string name="language_polish">Polski</string>
+    <string name="language_english">Angielski</string>
+    <string name="new_messages">Nowe wiadomości</string>
+    <string name="scroll_down">Przewiń na dół</string>
+    <string name="status_loading">Ładowanie…</string>
+    <string name="status_online">🟢 Online</string>
+    <string name="status_offline">🔴 Offline</string>
+    <string name="viewers">👥 %1$d</string>
+    <string name="back">Wstecz</string>
+</resources>
