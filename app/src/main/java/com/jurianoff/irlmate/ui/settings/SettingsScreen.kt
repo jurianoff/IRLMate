@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
 
@@ -17,68 +16,73 @@ fun SettingsScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Ustawienia") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Wstecz"
-                        )
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(16.dp)
-                .fillMaxSize()
-        ) {
-            Text(
-                text = "Motyw aplikacji",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+    val themeColorKey = MaterialTheme.colorScheme.background // zmienia się przy przełączeniu motywu
 
-            ThemeModeOption(
-                title = "Tryb jasny",
-                description = "Używaj jasnego motywu",
-                selected = ThemeSettings.darkMode == ThemeMode.LIGHT,
-                onClick = {
-                    ThemeSettings.darkMode = ThemeMode.LIGHT
-                    coroutineScope.launch {
-                        ThemeSettings.saveTheme(context)
+    key(themeColorKey) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Ustawienia") },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Wstecz"
+                            )
+                        }
                     }
-                }
-            )
+                )
+            }
+        ) { padding ->
+            Column(
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(16.dp)
+                    .fillMaxSize()
+            ) {
+                Text(
+                    text = "Motyw aplikacji",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
 
-            ThemeModeOption(
-                title = "Tryb ciemny",
-                description = "Używaj ciemnego motywu",
-                selected = ThemeSettings.darkMode == ThemeMode.DARK,
-                onClick = {
-                    ThemeSettings.darkMode = ThemeMode.DARK
-                    coroutineScope.launch {
-                        ThemeSettings.saveTheme(context)
+                ThemeModeOption(
+                    title = "Tryb jasny",
+                    description = "Używaj jasnego motywu",
+                    selected = ThemeSettings.darkMode == ThemeMode.LIGHT,
+                    onClick = {
+                        ThemeSettings.darkMode = ThemeMode.LIGHT
+                        coroutineScope.launch {
+                            ThemeSettings.saveTheme(context)
+                        }
                     }
-                }
-            )
+                )
 
-            ThemeModeOption(
-                title = "Automatyczny",
-                description = "Dopasuj do ustawień systemowych",
-                selected = ThemeSettings.darkMode == ThemeMode.SYSTEM,
-                onClick = {
-                    ThemeSettings.darkMode = ThemeMode.SYSTEM
-                    coroutineScope.launch {
-                        ThemeSettings.saveTheme(context)
+                ThemeModeOption(
+                    title = "Tryb ciemny",
+                    description = "Używaj ciemnego motywu",
+                    selected = ThemeSettings.darkMode == ThemeMode.DARK,
+                    onClick = {
+                        ThemeSettings.darkMode = ThemeMode.DARK
+                        coroutineScope.launch {
+                            ThemeSettings.saveTheme(context)
+                        }
                     }
-                }
-            )
+                )
+
+                ThemeModeOption(
+                    title = "Automatyczny",
+                    description = "Dopasuj do ustawień systemowych",
+                    selected = ThemeSettings.darkMode == ThemeMode.SYSTEM,
+                    onClick = {
+                        ThemeSettings.darkMode = ThemeMode.SYSTEM
+                        coroutineScope.launch {
+                            ThemeSettings.saveTheme(context)
+                        }
+                    }
+                )
+            }
         }
     }
 }

@@ -9,6 +9,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -60,7 +63,18 @@ fun MainScreen(onSettingsClick: () -> Unit, viewModel: ChatViewModel = viewModel
                                 .height(48.dp)
                                 .padding(end = 12.dp)
                         )
-                        Text("IRLMate")
+                        Text(
+                            text = "IRLMate",
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                shadow = Shadow(
+                                    color = Color.Black.copy(alpha = 0.6f),
+                                    offset = Offset(1f, 1f),
+                                    blurRadius = 1f
+                                )
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+
                     }
                 },
                 actions = {
