@@ -17,4 +17,7 @@
     <string name="status_offline">🔴 Offline</string>
     <string name="viewers">👥 %1$d</string>
     <string name="back">Back</string>
+    <string name="theme_light_desc">Use light theme</string>
+    <string name="theme_dark_desc">Use dark theme</string>
+    <string name="theme_system_desc">Match system settings</string>
 </resources>

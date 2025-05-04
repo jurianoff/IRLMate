@@ -51,7 +51,7 @@ fun SettingsScreen(onBack: () -> Unit) {
 
             ThemeModeOption(
                 title = stringResource(R.string.light_theme),
-                description = "Używaj jasnego motywu",
+                description = stringResource(R.string.theme_light_desc),
                 selected = ThemeSettings.darkMode == ThemeMode.LIGHT,
                 onClick = {
                     ThemeSettings.darkMode = ThemeMode.LIGHT
@@ -61,7 +61,7 @@ fun SettingsScreen(onBack: () -> Unit) {
 
             ThemeModeOption(
                 title = stringResource(R.string.dark_theme),
-                description = "Używaj ciemnego motywu",
+                description = stringResource(R.string.theme_dark_desc),
                 selected = ThemeSettings.darkMode == ThemeMode.DARK,
                 onClick = {
                     ThemeSettings.darkMode = ThemeMode.DARK
@@ -71,7 +71,7 @@ fun SettingsScreen(onBack: () -> Unit) {
 
             ThemeModeOption(
                 title = stringResource(R.string.system_theme),
-                description = "Dopasuj do ustawień systemowych",
+                description = stringResource(R.string.theme_system_desc),
                 selected = ThemeSettings.darkMode == ThemeMode.SYSTEM,
                 onClick = {
                     ThemeSettings.darkMode = ThemeMode.SYSTEM
@@ -112,7 +112,7 @@ fun SettingsScreen(onBack: () -> Unit) {
             )
 
             LanguageOption(
-                title = stringResource(R.string.language_polish),
+                title = "Polski",
                 selected = selectedLanguage == "pl",
                 onClick = {
                     selectedLanguage = "pl"
@@ -122,7 +122,7 @@ fun SettingsScreen(onBack: () -> Unit) {
             )
 
             LanguageOption(
-                title = stringResource(R.string.language_english),
+                title = "English",
                 selected = selectedLanguage == "en",
                 onClick = {
                     selectedLanguage = "en"

@@ -2,13 +2,18 @@ package com.jurianoff.irlmate.navigation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,6 +28,21 @@ import java.util.*
 
 @Composable
 fun IRLMateApp() {
+    val context = LocalContext.current
+    val isInitialized = ThemeSettings.isInitialized
+
+    // Początkowe ładowanie ustawień
+    LaunchedEffect(Unit) {
+        ThemeSettings.loadTheme(context)
+    }
+
+    if (!isInitialized) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
     val darkMode = ThemeSettings.darkMode
     val isDarkTheme = when (darkMode) {
         ThemeMode.DARK   -> true
@@ -30,20 +50,19 @@ fun IRLMateApp() {
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
 
-    val context = LocalContext.current
-    val view = LocalView.current
-    val systemUi = rememberSystemUiController()
-    val bgColor = MaterialTheme.colorScheme.background
-    val useDarkIcons = !isDarkTheme
-
-    // 🟠 Aktualny język
     val languageCode = ThemeSettings.languageCode
     val locale = remember(languageCode) { Locale(languageCode) }
+
     val configuration = LocalConfiguration.current
     val updatedConfig = Configuration(configuration).apply {
         setLocale(locale)
     }
     val localizedContext = context.createConfigurationContext(updatedConfig)
+
+    val view = LocalView.current
+    val systemUi = rememberSystemUiController()
+    val bgColor = MaterialTheme.colorScheme.background
+    val useDarkIcons = !isDarkTheme
 
     CompositionLocalProvider(
         LocalContext provides localizedContext,
@@ -56,10 +75,6 @@ fun IRLMateApp() {
             }
 
             val navController = rememberNavController()
-
-            LaunchedEffect(Unit) {
-                ThemeSettings.loadTheme(context)
-            }
 
             NavHost(navController = navController, startDestination = "main") {
                 composable("main") {
