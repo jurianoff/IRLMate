@@ -3,7 +3,6 @@ package com.jurianoff.irlmate.data.kick
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.json.JSONObject
 
 data class KickStreamStatus(
@@ -13,19 +12,18 @@ data class KickStreamStatus(
 
 object KickStatusChecker {
     private val client = OkHttpClient()
-    private const val CHANNEL_NAME = "jurianoff"
 
-    suspend fun getStreamStatus(): KickStreamStatus = withContext(Dispatchers.IO) {
+    suspend fun getStreamStatus(channelName: String): KickStreamStatus = withContext(Dispatchers.IO) {
         try {
-            val request = Request.Builder()
-                .url("https://kick.com/api/v2/channels/$CHANNEL_NAME")
-                .build()
+            val request = createKickRequest("https://kick.com/api/v2/channels/$channelName")
 
             client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) return@withContext KickStreamStatus(false, null)
+                if (!response.isSuccessful) {
+                    println("❌ [KickStatusChecker] Błąd odpowiedzi: ${response.code}")
+                    return@withContext KickStreamStatus(false, null)
+                }
 
-                val body =
-                    response.body?.string() ?: return@withContext KickStreamStatus(false, null)
+                val body = response.body?.string() ?: return@withContext KickStreamStatus(false, null)
                 val json = JSONObject(body)
 
                 val livestream = json.optJSONObject("livestream")
@@ -37,7 +35,7 @@ object KickStatusChecker {
                 return@withContext KickStreamStatus(false, null)
             }
         } catch (e: Exception) {
-            println("❌ Błąd pobierania statusu Kick: ${e.message}")
+            println("❌ [KickStatusChecker] Wyjątek: ${e.message}")
             return@withContext KickStreamStatus(false, null)
         }
     }

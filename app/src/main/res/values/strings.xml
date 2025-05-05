@@ -20,4 +20,9 @@
     <string name="theme_light_desc">Use light theme</string>
     <string name="theme_dark_desc">Use dark theme</string>
     <string name="theme_system_desc">Match system settings</string>
+    <string name="channel_settings">Channel Settings</string>
+    <string name="twitch_channel">Twitch channel name</string>
+    <string name="kick_channel">Kick channel name</string>
+    <string name="save">Save</string>
+
 </resources>

@@ -1,14 +1,10 @@
 package com.jurianoff.irlmate.navigation
 
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -20,29 +16,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.jurianoff.irlmate.ui.main.MainScreen
-import com.jurianoff.irlmate.ui.settings.SettingsScreen
-import com.jurianoff.irlmate.ui.settings.ThemeMode
-import com.jurianoff.irlmate.ui.settings.ThemeSettings
+import com.jurianoff.irlmate.ui.settings.*
 import com.jurianoff.irlmate.ui.theme.IRLMateTheme
 import java.util.*
 
 @Composable
-fun IRLMateApp() {
-    val context = LocalContext.current
-    val isInitialized = ThemeSettings.isInitialized
-
-    // Początkowe ładowanie ustawień
-    LaunchedEffect(Unit) {
-        ThemeSettings.loadTheme(context)
-    }
-
-    if (!isInitialized) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-        return
-    }
-
+fun IRLMateApp(startInSettings: Boolean = false) {
     val darkMode = ThemeSettings.darkMode
     val isDarkTheme = when (darkMode) {
         ThemeMode.DARK   -> true
@@ -50,19 +29,19 @@ fun IRLMateApp() {
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
 
+    val context = LocalContext.current
+    val view = LocalView.current
+    val systemUi = rememberSystemUiController()
+    val bgColor = MaterialTheme.colorScheme.background
+    val useDarkIcons = !isDarkTheme
+
     val languageCode = ThemeSettings.languageCode
     val locale = remember(languageCode) { Locale(languageCode) }
-
     val configuration = LocalConfiguration.current
     val updatedConfig = Configuration(configuration).apply {
         setLocale(locale)
     }
     val localizedContext = context.createConfigurationContext(updatedConfig)
-
-    val view = LocalView.current
-    val systemUi = rememberSystemUiController()
-    val bgColor = MaterialTheme.colorScheme.background
-    val useDarkIcons = !isDarkTheme
 
     CompositionLocalProvider(
         LocalContext provides localizedContext,
@@ -76,12 +55,38 @@ fun IRLMateApp() {
 
             val navController = rememberNavController()
 
-            NavHost(navController = navController, startDestination = "main") {
+            LaunchedEffect(Unit) {
+                ThemeSettings.loadTheme(context)
+            }
+
+            NavHost(
+                navController = navController,
+                startDestination = if (startInSettings) "settings" else "main"
+            ) {
                 composable("main") {
                     MainScreen(onSettingsClick = { navController.navigate("settings") })
                 }
                 composable("settings") {
-                    SettingsScreen(onBack = { navController.popBackStack() })
+                    SettingsScreen(
+                        onBack = { navController.popBackStack() },
+                        onNavigateToKickLogin = {
+                            navController.navigate("kick_enter_username")
+                        }
+                    )
+                }
+                composable("kick_enter_username") {
+                    KickEnterUsernameScreen(
+                        onUsernameConfirmed = { username ->
+                            val loginUrl =
+                                "https://ah2d6m1qy4.execute-api.eu-central-1.amazonaws.com/auth/kick/start?username=$username"
+                            val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(loginUrl)).apply {
+                                addCategory(Intent.CATEGORY_BROWSABLE)
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            }
+                            context.startActivity(intent)
+                        },
+                        onBack = { navController.popBackStack() }
+                    )
                 }
             }
         }

@@ -24,6 +24,7 @@ import com.jurianoff.irlmate.data.twitch.TwitchStatusChecker
 import com.jurianoff.irlmate.data.twitch.TwitchStreamStatus
 import com.jurianoff.irlmate.ui.main.components.ChatList
 import com.jurianoff.irlmate.ui.main.components.StreamStatusBar
+import com.jurianoff.irlmate.ui.settings.ChannelSettings
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,14 +33,16 @@ fun MainScreen(onSettingsClick: () -> Unit, viewModel: ChatViewModel = viewModel
 
     val messages = viewModel.messages
 
-    /*────────────── Statusy streamów ──────────────*/
     var kickStatus by remember { mutableStateOf<KickStreamStatus?>(null) }
     var twitchStatus by remember { mutableStateOf<TwitchStreamStatus?>(null) }
 
-    LaunchedEffect(Unit) {
+    val kickChannel = ChannelSettings.kickChannel
+    val twitchChannel = ChannelSettings.twitchChannel
+
+    LaunchedEffect(kickChannel, twitchChannel) {
         while (true) {
-            kickStatus = KickStatusChecker.getStreamStatus()
-            twitchStatus = TwitchStatusChecker.getStreamStatus()
+            kickStatus = KickStatusChecker.getStreamStatus(kickChannel)
+            twitchStatus = TwitchStatusChecker.getStreamStatus(twitchChannel)
             delay(10_000)
         }
     }

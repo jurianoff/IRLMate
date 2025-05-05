@@ -20,4 +20,9 @@
     <string name="theme_light_desc">Używaj jasnego motywu</string>
     <string name="theme_dark_desc">Używaj ciemnego motywu</string>
     <string name="theme_system_desc">Dopasuj do ustawień systemowych</string>
+    <string name="channel_settings">Kanały do śledzenia</string>
+    <string name="twitch_channel">Nazwa kanału Twitch</string>
+    <string name="kick_channel">Nazwa kanału Kick</string>
+    <string name="save">Zapisz</string>
+
 </resources>

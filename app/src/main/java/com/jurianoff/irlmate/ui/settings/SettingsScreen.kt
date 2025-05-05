@@ -1,24 +1,28 @@
 package com.jurianoff.irlmate.ui.settings
 
+import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import kotlinx.coroutines.launch
+import androidx.compose.ui.unit.dp
 import com.jurianoff.irlmate.R
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onBack: () -> Unit) {
+fun SettingsScreen(
+    onBack: () -> Unit,
+    onNavigateToKickLogin: () -> Unit
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val activity = context as? Activity
+
     var selectedLanguage by remember { mutableStateOf(ThemeSettings.languageCode) }
     var keepScreenOn by remember { mutableStateOf(ThemeSettings.keepScreenOn) }
 
@@ -43,6 +47,49 @@ fun SettingsScreen(onBack: () -> Unit) {
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
+            /*──────────── Kick Login ────────────*/
+            Text(
+                text = "Kick.com",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            val isLoggedIn = remember { mutableStateOf(KickSession.isLoggedIn) }
+            val kickUsername = remember { mutableStateOf(KickSession.username ?: "") }
+
+            if (!isLoggedIn.value) {
+                Button(
+                    onClick = { onNavigateToKickLogin() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Zaloguj się do Kick")
+                }
+            } else {
+                Text(
+                    text = "Zalogowano jako: ${kickUsername.value}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            KickSession.clearSession(context)
+                            isLoggedIn.value = false
+                            kickUsername.value = ""
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Wyloguj z Kick")
+                }
+            }
+
+
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            /*──────────── Motyw ────────────*/
             Text(
                 text = stringResource(R.string.theme),
                 style = MaterialTheme.typography.titleMedium,
@@ -81,6 +128,7 @@ fun SettingsScreen(onBack: () -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            /*──────────── Wygaszanie ────────────*/
             Text(
                 text = stringResource(R.string.keep_screen_on),
                 style = MaterialTheme.typography.titleMedium,
@@ -105,6 +153,7 @@ fun SettingsScreen(onBack: () -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            /*──────────── Język ────────────*/
             Text(
                 text = stringResource(R.string.language),
                 style = MaterialTheme.typography.titleMedium,
@@ -117,7 +166,7 @@ fun SettingsScreen(onBack: () -> Unit) {
                 onClick = {
                     selectedLanguage = "pl"
                     ThemeSettings.languageCode = "pl"
-                    coroutineScope.launch { ThemeSettings.saveTheme(context) }
+                    coroutineScope.launch { ThemeSettings.saveLanguage(context) }
                 }
             )
 
@@ -127,12 +176,14 @@ fun SettingsScreen(onBack: () -> Unit) {
                 onClick = {
                     selectedLanguage = "en"
                     ThemeSettings.languageCode = "en"
-                    coroutineScope.launch { ThemeSettings.saveTheme(context) }
+                    coroutineScope.launch { ThemeSettings.saveLanguage(context) }
                 }
             )
         }
     }
 }
+
+/*─────────────────── POMOCNICZE ───────────────────*/
 
 @Composable
 private fun ThemeModeOption(
@@ -144,12 +195,7 @@ private fun ThemeModeOption(
     ListItem(
         headlineContent = { Text(title) },
         supportingContent = { Text(description) },
-        trailingContent = {
-            RadioButton(
-                selected = selected,
-                onClick = onClick
-            )
-        },
+        trailingContent = { RadioButton(selected = selected, onClick = onClick) },
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -162,12 +208,7 @@ private fun LanguageOption(
 ) {
     ListItem(
         headlineContent = { Text(title) },
-        trailingContent = {
-            RadioButton(
-                selected = selected,
-                onClick = onClick
-            )
-        },
+        trailingContent = { RadioButton(selected = selected, onClick = onClick) },
         modifier = Modifier.fillMaxWidth()
     )
 }

@@ -15,12 +15,11 @@ object TwitchStatusChecker {
     private val client = OkHttpClient()
     private const val CLIENT_ID = "gp762nuuoqcoxypju8c569th9wz7q5"
     private const val ACCESS_TOKEN = "bq6sern242s2kkoe24bf8vigq8doo2"
-    private const val CHANNEL_NAME = "jurianoff"
 
-    suspend fun getStreamStatus(): TwitchStreamStatus = withContext(Dispatchers.IO) {
+    suspend fun getStreamStatus(channelName: String): TwitchStreamStatus = withContext(Dispatchers.IO) {
         try {
             val request = Request.Builder()
-                .url("https://api.twitch.tv/helix/streams?user_login=$CHANNEL_NAME")
+                .url("https://api.twitch.tv/helix/streams?user_login=$channelName")
                 .addHeader("Client-ID", CLIENT_ID)
                 .addHeader("Authorization", "Bearer $ACCESS_TOKEN")
                 .build()
@@ -28,8 +27,7 @@ object TwitchStatusChecker {
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) return@withContext TwitchStreamStatus(false, null)
 
-                val body =
-                    response.body?.string() ?: return@withContext TwitchStreamStatus(false, null)
+                val body = response.body?.string() ?: return@withContext TwitchStreamStatus(false, null)
                 val json = JSONObject(body)
                 val dataArray = json.getJSONArray("data")
 
