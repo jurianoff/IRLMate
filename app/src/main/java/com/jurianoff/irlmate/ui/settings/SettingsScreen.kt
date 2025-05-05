@@ -12,6 +12,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jurianoff.irlmate.R
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,6 +27,7 @@ fun SettingsScreen(
 
     var selectedLanguage by remember { mutableStateOf(ThemeSettings.languageCode) }
     var keepScreenOn by remember { mutableStateOf(ThemeSettings.keepScreenOn) }
+    val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -46,6 +49,7 @@ fun SettingsScreen(
                 .padding(padding)
                 .padding(16.dp)
                 .fillMaxSize()
+                .verticalScroll(scrollState)
         ) {
             /*──────────── Kick Login ────────────*/
             Text(
@@ -62,11 +66,12 @@ fun SettingsScreen(
                     onClick = { onNavigateToKickLogin() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Zaloguj się do Kick")
+                    Text(stringResource(R.string.kick_login_button))
+
                 }
             } else {
                 Text(
-                    text = "Zalogowano jako: ${kickUsername.value}",
+                    text = stringResource(R.string.logged_in_as),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )

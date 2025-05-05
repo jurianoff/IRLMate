@@ -6,10 +6,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import com.jurianoff.irlmate.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,10 +26,10 @@ fun KickEnterUsernameScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Kick.com – Login") },
+                title = { Text(stringResource(R.string.kick_login_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Wstecz")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
@@ -39,7 +41,7 @@ fun KickEnterUsernameScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Wpisz swój login (slug) na Kick.com",
+                text = stringResource(R.string.kick_login_prompt),
                 style = MaterialTheme.typography.bodyLarge
             )
 
@@ -52,13 +54,13 @@ fun KickEnterUsernameScreen(
                     showError = false
                 },
                 isError = showError,
-                label = { Text("Login (np. jurianoff)") },
+                label = { Text(stringResource(R.string.kick_login_label)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             if (showError) {
                 Text(
-                    text = "Login nie może być pusty",
+                    text = stringResource(R.string.kick_login_error),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -72,16 +74,14 @@ fun KickEnterUsernameScreen(
                     if (trimmed.isEmpty()) {
                         showError = true
                     } else {
-                        // Zapisz username do SharedPreferences (tymczasowo)
                         context.getSharedPreferences("kick_auth", Context.MODE_PRIVATE)
                             .edit().putString("username", trimmed).apply()
-
                         onUsernameConfirmed(trimmed)
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Kontynuuj")
+                Text(stringResource(R.string.cont))
             }
         }
     }

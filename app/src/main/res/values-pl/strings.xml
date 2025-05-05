@@ -24,5 +24,14 @@
     <string name="twitch_channel">Nazwa kanału Twitch</string>
     <string name="kick_channel">Nazwa kanału Kick</string>
     <string name="save">Zapisz</string>
+    <string name="kick_login_title">Kick.com – Logowanie</string>
+    <string name="kick_login_prompt">Wpisz swój login (slug) na Kick.com</string>
+    <string name="kick_login_label">Login (np. jurianoff)</string>
+    <string name="kick_login_error">Login nie może być pusty</string>
+    <string name="cont">Kontynuuj</string>
+    <string name="logged_in_as">Zalogowano jako %1$s</string>
+    <string name="logout">Wyloguj</string>
+    <string name="show_chat_status">Pokaż czat i status transmisji</string>
+    <string name="kick_login_button">Zaloguj się do Kick</string>
 
 </resources>
