@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.jurianoff.irlmate.data.kick.KickChatClient
 import com.jurianoff.irlmate.data.model.ChatMessage
 import com.jurianoff.irlmate.data.twitch.TwitchChatClient
-import com.jurianoff.irlmate.ui.settings.ChannelSettings
+import com.jurianoff.irlmate.ui.settings.KickSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -19,21 +19,24 @@ class ChatViewModel : ViewModel() {
     }
 
     private fun startConnections() {
-        val twitchChannel = ChannelSettings.twitchChannel
-        val kickChannel = ChannelSettings.kickChannel
+        if (KickSession.isLoggedIn() && KickSession.showChatAndStatus) {
+            val kickChannel = KickSession.username ?: return
 
+            viewModelScope.launch(Dispatchers.IO) {
+                val kick = KickChatClient(kickChannel) { message ->
+                    addMessage(message)
+                }
+                kick.connect()
+            }
+        }
+
+        // Twitch (tymczasowo – do zastąpienia później)
+        val twitchChannel = "jurianoff"
         viewModelScope.launch(Dispatchers.IO) {
             val twitch = TwitchChatClient(twitchChannel) { message ->
                 addMessage(message)
             }
             twitch.connect()
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val kick = KickChatClient(kickChannel) { message ->
-                addMessage(message)
-            }
-            kick.connect()
         }
     }
 

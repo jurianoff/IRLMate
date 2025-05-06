@@ -24,25 +24,29 @@ import com.jurianoff.irlmate.data.twitch.TwitchStatusChecker
 import com.jurianoff.irlmate.data.twitch.TwitchStreamStatus
 import com.jurianoff.irlmate.ui.main.components.ChatList
 import com.jurianoff.irlmate.ui.main.components.StreamStatusBar
-import com.jurianoff.irlmate.ui.settings.ChannelSettings
+import com.jurianoff.irlmate.ui.settings.KickSession
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onSettingsClick: () -> Unit, viewModel: ChatViewModel = viewModel()) {
-
+fun MainScreen(
+    onSettingsClick: () -> Unit,
+    viewModel: ChatViewModel = viewModel()
+) {
     val messages = viewModel.messages
 
     var kickStatus by remember { mutableStateOf<KickStreamStatus?>(null) }
     var twitchStatus by remember { mutableStateOf<TwitchStreamStatus?>(null) }
 
-    val kickChannel = ChannelSettings.kickChannel
-    val twitchChannel = ChannelSettings.twitchChannel
-
-    LaunchedEffect(kickChannel, twitchChannel) {
+    LaunchedEffect(KickSession.username) {
         while (true) {
-            kickStatus = KickStatusChecker.getStreamStatus(kickChannel)
-            twitchStatus = TwitchStatusChecker.getStreamStatus(twitchChannel)
+            kickStatus = if (KickSession.isLoggedIn() && KickSession.showChatAndStatus) {
+                KickSession.username?.let { KickStatusChecker.getStreamStatus(it) }
+            } else null
+
+            // Twitch – tymczasowo jak wcześniej
+            twitchStatus = TwitchStatusChecker.getStreamStatus("jurianoff") // lub zastąp w przyszłości dynamicznie
+
             delay(10_000)
         }
     }
@@ -91,6 +95,8 @@ fun MainScreen(onSettingsClick: () -> Unit, viewModel: ChatViewModel = viewModel
             )
         }
     ) { padding ->
+        val chatVisible = KickSession.isLoggedIn() && KickSession.showChatAndStatus
+
         if (isLandscape) {
             Row(
                 modifier = Modifier
@@ -102,18 +108,22 @@ fun MainScreen(onSettingsClick: () -> Unit, viewModel: ChatViewModel = viewModel
                         .weight(1f)
                         .padding(16.dp)
                 ) {
-                    StreamStatusBar(
-                        kickStatus = kickStatus,
-                        twitchStatus = twitchStatus,
-                        vertical = true
+                    if (chatVisible) {
+                        StreamStatusBar(
+                            kickStatus = kickStatus,
+                            twitchStatus = twitchStatus,
+                            vertical = true
+                        )
+                    }
+                }
+                if (chatVisible) {
+                    ChatList(
+                        messages = messages,
+                        modifier = Modifier
+                            .weight(2f)
+                            .fillMaxHeight()
                     )
                 }
-                ChatList(
-                    messages = messages,
-                    modifier = Modifier
-                        .weight(2f)
-                        .fillMaxHeight()
-                )
             }
         } else {
             Column(
@@ -121,14 +131,16 @@ fun MainScreen(onSettingsClick: () -> Unit, viewModel: ChatViewModel = viewModel
                     .padding(padding)
                     .fillMaxSize()
             ) {
-                StreamStatusBar(
-                    kickStatus = kickStatus,
-                    twitchStatus = twitchStatus
-                )
-                ChatList(
-                    messages = messages,
-                    modifier = Modifier.weight(1f)
-                )
+                if (chatVisible) {
+                    StreamStatusBar(
+                        kickStatus = kickStatus,
+                        twitchStatus = twitchStatus
+                    )
+                    ChatList(
+                        messages = messages,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
     }

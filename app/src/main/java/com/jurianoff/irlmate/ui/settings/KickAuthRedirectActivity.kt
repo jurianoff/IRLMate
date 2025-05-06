@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import com.jurianoff.irlmate.MainActivity
 import com.jurianoff.irlmate.R
@@ -12,6 +11,8 @@ import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
+import android.util.Log
+
 
 class KickAuthRedirectActivity : Activity() {
 
@@ -92,10 +93,9 @@ class KickAuthRedirectActivity : Activity() {
                     ).show()
 
                     val intent = Intent(this@KickAuthRedirectActivity, MainActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        putExtra("navigateToSettings", true)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        putExtra("navigateTo", "open_settings_after_start")
                     }
-
                     startActivity(intent)
                     finish()
                 }

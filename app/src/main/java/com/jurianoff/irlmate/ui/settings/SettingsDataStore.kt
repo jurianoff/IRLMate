@@ -55,26 +55,5 @@ object SettingsDataStore {
                 preferences[LANGUAGE_CODE_KEY] ?: "en" // Domyślnie angielski
             }
     }
-    private val TWITCH_CHANNEL_KEY = stringPreferencesKey("twitch_channel")
-    private val KICK_CHANNEL_KEY = stringPreferencesKey("kick_channel")
 
-    suspend fun saveTwitchChannel(context: Context, name: String) {
-        context.dataStore.edit { preferences ->
-            preferences[TWITCH_CHANNEL_KEY] = name
-        }
-    }
-
-    fun readTwitchChannel(context: Context) = context.dataStore.data.map { prefs ->
-        prefs[TWITCH_CHANNEL_KEY] ?: "jurianoff"
-    }
-
-    suspend fun saveKickChannel(context: Context, name: String) {
-        context.dataStore.edit { preferences ->
-            preferences[KICK_CHANNEL_KEY] = name
-        }
-    }
-
-    fun readKickChannel(context: Context) = context.dataStore.data.map { prefs ->
-        prefs[KICK_CHANNEL_KEY] ?: "jurianoff"
-    }
 }

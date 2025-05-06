@@ -19,23 +19,22 @@
         android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
 
+        <!-- ✅ Zmieniono: launchMode = singleTask -->
         <activity
             android:name="com.jurianoff.irlmate.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.IRLMate">
+            android:theme="@style/Theme.IRLMate"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Opcjonalne, bo KickLoginActivity nie jest już używany -->
-        <activity
-            android:name="com.jurianoff.irlmate.ui.settings.KickLoginActivity"
-            android:exported="false" />
+        
 
-        <!-- 🔐 Kick OAuth2: przechwytywanie redirectu -->
+        <!-- 🔐 Kick OAuth2 redirect -->
         <activity
             android:name="com.jurianoff.irlmate.ui.settings.KickAuthRedirectActivity"
             android:exported="true">

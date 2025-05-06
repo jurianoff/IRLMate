@@ -1,6 +1,5 @@
 package com.jurianoff.irlmate.navigation
 
-import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -54,9 +53,20 @@ fun IRLMateApp(startDestination: String? = null) {
                 ThemeSettings.loadTheme(context)
             }
 
+            // 🔄 Rozwijamy startDestination
+            val initialStart = if (startDestination == "open_settings_after_start") "main"
+            else (startDestination ?: "main")
+
+            // 🚀 Po starcie z parametrem – idź od razu do settings
+            LaunchedEffect(startDestination) {
+                if (startDestination == "open_settings_after_start") {
+                    navController.navigate("settings")
+                }
+            }
+
             NavHost(
                 navController = navController,
-                startDestination = startDestination ?: "main"
+                startDestination = initialStart
             ) {
                 composable("main") {
                     MainScreen(onSettingsClick = { navController.navigate("settings") })
@@ -71,17 +81,6 @@ fun IRLMateApp(startDestination: String? = null) {
                 }
                 composable("kick_enter_username") {
                     KickEnterUsernameScreen(
-                        onUsernameConfirmed = { username ->
-                            val loginUrl = "https://ah2d6m1qy4.execute-api.eu-central-1.amazonaws.com/auth/kick/start?username=$username"
-                            val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(loginUrl)).apply {
-                                addCategory(Intent.CATEGORY_BROWSABLE)
-                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            }
-                            context.startActivity(intent)
-
-                            // Cofnięcie do głównego ekranu
-                            navController.popBackStack("main", inclusive = false)
-                        },
                         onBack = { navController.popBackStack() }
                     )
                 }

@@ -54,7 +54,7 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-            /*──────────── Kick Login ────────────*/
+            // Kick login/logout
             val isLoggedIn = remember { mutableStateOf(KickSession.isLoggedIn()) }
             val kickUsername = remember { mutableStateOf(KickSession.username ?: "") }
             var showKick by remember { mutableStateOf(KickSession.showChatAndStatus) }
@@ -81,7 +81,7 @@ fun SettingsScreen(
                         )
                     }
                     TextButton(onClick = { onNavigateToKickLogin() }) {
-                        Text(stringResource(R.string.login)) // ← Zmieniony string
+                        Text(stringResource(R.string.login))
                     }
                 }
             } else {
@@ -93,7 +93,7 @@ fun SettingsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Kick.com", // ← Tylko tutaj nazwa platformy
+                        text = "Kick.com",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Switch(
@@ -125,14 +125,7 @@ fun SettingsScreen(
                                 isLoggedIn.value = false
                                 kickUsername.value = ""
 
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.kick_logout_success),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-
-                                // ✅ Komunikat po wylogowaniu
+                                // ✅ tylko jeden Toast
                                 Toast.makeText(
                                     context,
                                     context.getString(R.string.kick_logout_success),
@@ -140,20 +133,15 @@ fun SettingsScreen(
                                 ).show()
                             }
                         }
-                    )
-                    {
+                    ) {
                         Text(stringResource(R.string.logout))
                     }
                 }
             }
 
-
-
-
-
             Spacer(modifier = Modifier.height(32.dp))
 
-            /*──────────── Motyw ────────────*/
+            // Motyw
             Text(
                 text = stringResource(R.string.theme),
                 style = MaterialTheme.typography.titleMedium,
@@ -192,7 +180,7 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            /*──────────── Wygaszanie ────────────*/
+            // Wygaszanie
             Text(
                 text = stringResource(R.string.keep_screen_on),
                 style = MaterialTheme.typography.titleMedium,
@@ -217,7 +205,7 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            /*──────────── Język ────────────*/
+            // Język
             Text(
                 text = stringResource(R.string.language),
                 style = MaterialTheme.typography.titleMedium,
@@ -246,8 +234,6 @@ fun SettingsScreen(
         }
     }
 }
-
-/*─────────────────── POMOCNICZE ───────────────────*/
 
 @Composable
 private fun ThemeModeOption(
