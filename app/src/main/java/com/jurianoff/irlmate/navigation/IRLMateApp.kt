@@ -5,11 +5,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,16 +17,15 @@ import com.jurianoff.irlmate.ui.theme.IRLMateTheme
 import java.util.*
 
 @Composable
-fun IRLMateApp(startInSettings: Boolean = false) {
+fun IRLMateApp(startDestination: String? = null) {
     val darkMode = ThemeSettings.darkMode
     val isDarkTheme = when (darkMode) {
-        ThemeMode.DARK   -> true
-        ThemeMode.LIGHT  -> false
+        ThemeMode.DARK -> true
+        ThemeMode.LIGHT -> false
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
 
     val context = LocalContext.current
-    val view = LocalView.current
     val systemUi = rememberSystemUiController()
     val bgColor = MaterialTheme.colorScheme.background
     val useDarkIcons = !isDarkTheme
@@ -61,7 +56,7 @@ fun IRLMateApp(startInSettings: Boolean = false) {
 
             NavHost(
                 navController = navController,
-                startDestination = if (startInSettings) "settings" else "main"
+                startDestination = startDestination ?: "main"
             ) {
                 composable("main") {
                     MainScreen(onSettingsClick = { navController.navigate("settings") })
@@ -77,13 +72,15 @@ fun IRLMateApp(startInSettings: Boolean = false) {
                 composable("kick_enter_username") {
                     KickEnterUsernameScreen(
                         onUsernameConfirmed = { username ->
-                            val loginUrl =
-                                "https://ah2d6m1qy4.execute-api.eu-central-1.amazonaws.com/auth/kick/start?username=$username"
+                            val loginUrl = "https://ah2d6m1qy4.execute-api.eu-central-1.amazonaws.com/auth/kick/start?username=$username"
                             val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(loginUrl)).apply {
                                 addCategory(Intent.CATEGORY_BROWSABLE)
                                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             }
                             context.startActivity(intent)
+
+                            // Cofnięcie do głównego ekranu
+                            navController.popBackStack("main", inclusive = false)
                         },
                         onBack = { navController.popBackStack() }
                     )

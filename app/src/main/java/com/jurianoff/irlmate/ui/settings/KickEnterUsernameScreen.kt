@@ -2,15 +2,14 @@ package com.jurianoff.irlmate.ui.settings
 
 import android.content.Context
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import com.jurianoff.irlmate.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,7 +19,7 @@ fun KickEnterUsernameScreen(
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
-    var username by remember { mutableStateOf(TextFieldValue("")) }
+    var username by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -41,7 +40,7 @@ fun KickEnterUsernameScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = stringResource(R.string.kick_login_prompt),
+                text = stringResource(R.string.enter_kick_login),
                 style = MaterialTheme.typography.bodyLarge
             )
 
@@ -50,12 +49,16 @@ fun KickEnterUsernameScreen(
             OutlinedTextField(
                 value = username,
                 onValueChange = {
-                    username = it
+                    username = it.trimStart()
                     showError = false
                 },
                 isError = showError,
-                label = { Text(stringResource(R.string.kick_login_label)) },
-                modifier = Modifier.fillMaxWidth()
+                singleLine = true,
+                label = { Text(stringResource(R.string.username_label)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                shape = MaterialTheme.shapes.medium
             )
 
             if (showError) {
@@ -70,7 +73,7 @@ fun KickEnterUsernameScreen(
 
             Button(
                 onClick = {
-                    val trimmed = username.text.trim()
+                    val trimmed = username.trim()
                     if (trimmed.isEmpty()) {
                         showError = true
                     } else {

@@ -1,41 +1,51 @@
 package com.jurianoff.irlmate
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.*
 import androidx.lifecycle.lifecycleScope
-import androidx.compose.runtime.snapshotFlow
 import com.jurianoff.irlmate.navigation.IRLMateApp
+import com.jurianoff.irlmate.ui.settings.KickSession
 import com.jurianoff.irlmate.ui.settings.ThemeSettings
 import kotlinx.coroutines.launch
-import com.jurianoff.irlmate.ui.settings.KickSession
-
 
 class MainActivity : ComponentActivity() {
+    private var navigationTarget by mutableStateOf<String?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. Załaduj sesję
+        // 1. Załaduj sesję Kick
         lifecycleScope.launch {
             KickSession.loadSession(this@MainActivity)
         }
 
-        // 2. Sprawdź, czy przejść od razu do ustawień
-        val startInSettings = intent?.getBooleanExtra("navigateToSettings", false) == true
+        // 2. Sprawdź, czy użytkownik wraca z logowania
+        val initialTarget = intent?.getStringExtra("navigateTo")
+        navigationTarget = initialTarget
 
         // 3. Uruchom UI
         setContent {
-            IRLMateApp(startInSettings = startInSettings)
+            IRLMateApp(startDestination = navigationTarget)
         }
 
-        // 4. Obsługa wygaszania
+        // 4. Obsługa wygaszania ekranu
         lifecycleScope.launch {
             snapshotFlow { ThemeSettings.keepScreenOn }
                 .collect { keep -> applyKeepScreenOnFlag(keep) }
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val newTarget = intent.getStringExtra("navigateTo")
+        if (!newTarget.isNullOrEmpty()) {
+            navigationTarget = newTarget
+        }
+    }
 
     private fun applyKeepScreenOnFlag(keepOn: Boolean) {
         if (keepOn) {

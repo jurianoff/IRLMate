@@ -1,14 +1,10 @@
 package com.jurianoff.irlmate.ui.settings
 
 import android.content.Context
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 
-/**
- * Przechowuje dane sesji Kick: tokeny i dane użytkownika
- */
 object KickSession {
 
     // ─── In‑memory ────────────────────────────────────────────────────────────────
@@ -16,12 +12,9 @@ object KickSession {
     var refreshToken: String? = null
     var tokenType: String = "Bearer"
     var expiresInSeconds: Long = 7200
-
     var userId: String? = null
     var username: String? = null
-
-    val isLoggedIn: Boolean
-        get() = !accessToken.isNullOrEmpty() && !refreshToken.isNullOrEmpty() && !userId.isNullOrEmpty()
+    var showChatAndStatus: Boolean = true
 
     // ─── DataStore ────────────────────────────────────────────────────────────────
     private val Context.dataStore by preferencesDataStore(name = "kick_session")
@@ -32,6 +25,18 @@ object KickSession {
     private val KEY_EXPIRES = stringPreferencesKey("expires_in")
     private val KEY_USER_ID = stringPreferencesKey("user_id")
     private val KEY_USERNAME = stringPreferencesKey("username")
+    private val KEY_SHOW_CHAT = booleanPreferencesKey("show_chat_and_status")
+
+    fun isLoggedIn(): Boolean {
+        return !accessToken.isNullOrEmpty() && !userId.isNullOrEmpty() && !username.isNullOrEmpty()
+    }
+
+    suspend fun setShowChatAndStatus(context: Context, show: Boolean) {
+        showChatAndStatus = show
+        context.dataStore.edit { prefs ->
+            prefs[KEY_SHOW_CHAT] = show
+        }
+    }
 
     suspend fun saveSession(
         context: Context,
@@ -42,7 +47,6 @@ object KickSession {
         tokenType: String = "Bearer",
         expiresInSeconds: Long = 7200
     ) {
-        // zapisz w pamięci
         this.accessToken = accessToken
         this.refreshToken = refreshToken
         this.userId = userId
@@ -50,12 +54,6 @@ object KickSession {
         this.tokenType = tokenType
         this.expiresInSeconds = expiresInSeconds
 
-        println("💾 [KickSession] Zapisywanie sesji:")
-        println("  access: ${accessToken.take(8)}...")
-        println("  refresh: ${refreshToken.take(8)}...")
-        println("  user_id: $userId, username: $username")
-
-        // zapisz w EncryptedDataStore
         context.dataStore.edit { prefs ->
             prefs[KEY_ACCESS] = accessToken
             prefs[KEY_REFRESH] = refreshToken
@@ -63,7 +61,11 @@ object KickSession {
             username?.let { prefs[KEY_USERNAME] = it }
             prefs[KEY_TYPE] = tokenType
             prefs[KEY_EXPIRES] = expiresInSeconds.toString()
+            prefs[KEY_SHOW_CHAT] = showChatAndStatus
         }
+
+        println("💾 [KickSession] Zapisywanie sesji:")
+        println("     -> $username (ID: $userId)")
     }
 
     suspend fun loadSession(context: Context) {
@@ -74,9 +76,7 @@ object KickSession {
             username = prefs[KEY_USERNAME]
             tokenType = prefs[KEY_TYPE] ?: "Bearer"
             expiresInSeconds = prefs[KEY_EXPIRES]?.toLongOrNull() ?: 7200
-
-            println("📦 [KickSession] Załadowano sesję:")
-            println("  access: ${accessToken?.take(8)}..., user_id: $userId, username: $username")
+            showChatAndStatus = prefs[KEY_SHOW_CHAT] ?: true
         }
     }
 
@@ -87,6 +87,7 @@ object KickSession {
         username = null
         tokenType = "Bearer"
         expiresInSeconds = 7200
+        showChatAndStatus = true
         context.dataStore.edit { it.clear() }
 
         println("🧹 [KickSession] Wyczyszczono sesję")

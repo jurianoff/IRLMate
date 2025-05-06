@@ -29,10 +29,14 @@
     <string name="kick_login_label">Login (e.g. jurianoff)</string>
     <string name="kick_login_error">Login cannot be empty</string>
     <string name="cont">Continue</string>
-    <string name="logged_in_as">Logged in as %1$s</string>
+    <string name="login">Log in</string>
     <string name="logout">Log out</string>
+    <string name="logged_in_as">Logged in as %1$s</string>
     <string name="show_chat_status">Show chat and stream status</string>
-    <string name="kick_login_button">Log in to Kick</string>
-
-
+    <string name="enter_kick_login">Enter your Kick.com login</string>
+    <string name="username_label">Username (e.g. jurianoff)</string>
+    <string name="kick_login_success">Zalogowano do Kick jako %1$s</string>
+    <string name="kick_auth_failed">Logowanie do Kick nie powiodło się. Spróbuj ponownie.</string>
+    <string name="kick_login_failed">Failed to log in to Kick</string>
+    <string name="kick_logout_success">Logged out from Kick</string>
 </resources>

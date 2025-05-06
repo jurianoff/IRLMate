@@ -1,6 +1,7 @@
 package com.jurianoff.irlmate.ui.settings
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -14,6 +15,8 @@ import com.jurianoff.irlmate.R
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,43 +55,99 @@ fun SettingsScreen(
                 .verticalScroll(scrollState)
         ) {
             /*──────────── Kick Login ────────────*/
-            Text(
-                text = "Kick.com",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            val isLoggedIn = remember { mutableStateOf(KickSession.isLoggedIn) }
+            val isLoggedIn = remember { mutableStateOf(KickSession.isLoggedIn()) }
             val kickUsername = remember { mutableStateOf(KickSession.username ?: "") }
+            var showKick by remember { mutableStateOf(KickSession.showChatAndStatus) }
 
             if (!isLoggedIn.value) {
-                Button(
-                    onClick = { onNavigateToKickLogin() },
-                    modifier = Modifier.fillMaxWidth()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(stringResource(R.string.kick_login_button))
-
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_kick_logo),
+                            contentDescription = "Kick",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 8.dp)
+                        )
+                        Text(
+                            text = "Kick.com",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                    TextButton(onClick = { onNavigateToKickLogin() }) {
+                        Text(stringResource(R.string.login)) // ← Zmieniony string
+                    }
                 }
             } else {
-                Text(
-                    text = stringResource(R.string.logged_in_as),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            KickSession.clearSession(context)
-                            isLoggedIn.value = false
-                            kickUsername.value = ""
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Wyloguj z Kick")
+                    Text(
+                        text = "Kick.com", // ← Tylko tutaj nazwa platformy
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Switch(
+                        checked = showKick,
+                        onCheckedChange = {
+                            showKick = it
+                            coroutineScope.launch {
+                                KickSession.setShowChatAndStatus(context, it)
+                            }
+                        }
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.logged_in_as, kickUsername.value),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    TextButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                KickSession.clearSession(context)
+                                isLoggedIn.value = false
+                                kickUsername.value = ""
+
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.kick_logout_success),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+
+                                // ✅ Komunikat po wylogowaniu
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.kick_logout_success),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    )
+                    {
+                        Text(stringResource(R.string.logout))
+                    }
                 }
             }
+
+
 
 
 

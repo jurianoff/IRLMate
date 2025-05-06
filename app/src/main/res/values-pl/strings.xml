@@ -29,9 +29,14 @@
     <string name="kick_login_label">Login (np. jurianoff)</string>
     <string name="kick_login_error">Login nie może być pusty</string>
     <string name="cont">Kontynuuj</string>
-    <string name="logged_in_as">Zalogowano jako %1$s</string>
+    <string name="login">Zaloguj</string>
     <string name="logout">Wyloguj</string>
+    <string name="logged_in_as">Zalogowano jako %1$s</string>
     <string name="show_chat_status">Pokaż czat i status transmisji</string>
-    <string name="kick_login_button">Zaloguj się do Kick</string>
-
+    <string name="enter_kick_login">Wpisz swój login na Kick.com</string>
+    <string name="username_label">Login (np. jurianoff)</string>
+    <string name="kick_login_success">Zalogowano do Kick jako %1$s</string>
+    <string name="kick_auth_failed">Logowanie do Kick nie powiodło się. Spróbuj ponownie.</string>
+    <string name="kick_login_failed">Nie udało się zalogować do Kick</string>
+    <string name="kick_logout_success">Wylogowano z Kick</string>
 </resources>

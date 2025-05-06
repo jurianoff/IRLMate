@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.jurianoff.irlmate.MainActivity
+import com.jurianoff.irlmate.R
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -32,7 +34,6 @@ class KickAuthRedirectActivity : Activity() {
                 val expiresIn = uri.getQueryParameter("expires_in")?.toLongOrNull() ?: 7200
                 val tokenType = uri.getQueryParameter("token_type") ?: "Bearer"
 
-                // Username został wcześniej podany przez użytkownika (zachowany tymczasowo)
                 val sharedPref = getSharedPreferences("kick_auth", MODE_PRIVATE)
                 val username = sharedPref.getString("username", null)
 
@@ -41,12 +42,11 @@ class KickAuthRedirectActivity : Activity() {
                     refreshToken.isNullOrEmpty() ||
                     username.isNullOrEmpty()
                 ) {
-                    println("❌ [KickOAuth] Brakuje wymaganych danych")
+                    showToast(R.string.kick_auth_failed)
                     finishOnMain()
                     return@launch
                 }
 
-                // Pobierz dane użytkownika przez Kick API v2
                 val client = OkHttpClient()
                 val request = Request.Builder()
                     .url("https://kick.com/api/v2/channels/$username")
@@ -57,7 +57,7 @@ class KickAuthRedirectActivity : Activity() {
                 val body = response.body?.string()
 
                 if (!response.isSuccessful || body.isNullOrEmpty()) {
-                    println("❌ [KickOAuth] Błąd pobierania danych użytkownika: ${response.code}")
+                    showToast(R.string.kick_auth_failed)
                     finishOnMain()
                     return@launch
                 }
@@ -67,12 +67,12 @@ class KickAuthRedirectActivity : Activity() {
                 val actualUsername = json.optString("slug", username)
 
                 if (userId.isNullOrEmpty()) {
-                    println("❌ [KickOAuth] Brak user_id w odpowiedzi")
+                    showToast(R.string.kick_auth_failed)
                     finishOnMain()
                     return@launch
                 }
 
-                println("✅ [KickOAuth] Zalogowano jako $actualUsername (ID: $userId)")
+                Log.i("KickOAuth", "✅ Zalogowano jako $actualUsername (ID: $userId)")
 
                 withContext(Dispatchers.Main) {
                     KickSession.saveSession(
@@ -87,13 +87,12 @@ class KickAuthRedirectActivity : Activity() {
 
                     Toast.makeText(
                         this@KickAuthRedirectActivity,
-                        "Zalogowano do Kick jako $actualUsername",
+                        getString(R.string.kick_login_success, actualUsername),
                         Toast.LENGTH_LONG
                     ).show()
 
-                    // Wróć do SettingsScreen przez MainActivity z navController.navigate("settings")
                     val intent = Intent(this@KickAuthRedirectActivity, MainActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                         putExtra("navigateToSettings", true)
                     }
 
@@ -101,9 +100,9 @@ class KickAuthRedirectActivity : Activity() {
                     finish()
                 }
 
-
             } catch (e: Exception) {
                 e.printStackTrace()
+                showToast(R.string.kick_auth_failed)
                 finishOnMain()
             }
         }
@@ -112,6 +111,12 @@ class KickAuthRedirectActivity : Activity() {
     private suspend fun finishOnMain() {
         withContext(Dispatchers.Main) {
             finish()
+        }
+    }
+
+    private suspend fun showToast(resId: Int) {
+        withContext(Dispatchers.Main) {
+            Toast.makeText(this@KickAuthRedirectActivity, getString(resId), Toast.LENGTH_LONG).show()
         }
     }
 }
