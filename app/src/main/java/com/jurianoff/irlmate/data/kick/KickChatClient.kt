@@ -1,6 +1,7 @@
 package com.jurianoff.irlmate.data.kick
 
 import com.jurianoff.irlmate.data.model.ChatMessage
+import com.jurianoff.irlmate.ui.settings.KickSession
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -62,14 +63,13 @@ class KickChatClient(
         }
     }
 
-    //  ───────────────────────────────────────────────────────────────
-//  Zamiana T E J  funkcji w KickChatClient.kt
-//  ───────────────────────────────────────────────────────────────
     private fun fetchMessages(channelId: String) {
         try {
             val request = createKickRequest(
                 "https://kick.com/api/v2/chatrooms/$channelId/messages"
             )
+
+            println("🔑 [KickChatClient] Używam tokenu: ${KickSession.accessToken?.take(10)}...")
 
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
@@ -79,14 +79,16 @@ class KickChatClient(
 
                 val body = response.body?.string() ?: return
 
-                // Jeśli serwer odpowie HTML‑em (np. stroną błędu/logowania),
-                // pomijamy parsowanie, żeby nie spamować LogCat.
                 val trimmed = body.trim()
-                if (!trimmed.startsWith("[")) {      // oczekujemy JSON‑owej tablicy
+                println("🧪 [KickChatClient] Odpowiedź serwera:\n$trimmed")
+
+                if (!trimmed.startsWith("[")) {
+                    println("⚠️ [KickChatClient] Odpowiedź nie jest tablicą JSON, prawdopodobnie HTML.")
                     return
                 }
 
                 val messagesArray = JSONArray(trimmed)
+                println("📥 [KickChatClient] Odebrano ${messagesArray.length()} wiadomości")
 
                 for (i in 0 until messagesArray.length()) {
                     val msg = messagesArray.getJSONObject(i)
@@ -97,6 +99,8 @@ class KickChatClient(
                     val user = msg.getJSONObject("sender").getString("username")
                     val message = msg.getString("content")
                     val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+
+                    println("💬 [KickChatClient] Nowa wiadomość: [$user] $message")
 
                     onMessageReceived(
                         ChatMessage(
@@ -112,10 +116,18 @@ class KickChatClient(
                 }
             }
         } catch (e: Exception) {
-            // Tu zostawiamy log, żeby widzieć faktyczne wyjątki sieciowe/JSON,
-            // ale błąd HTML‑parsing już nie trafi do tego miejsca.
             println("❌ [KickChatClient] Błąd pobierania wiadomości: ${e.message}")
         }
     }
 
+    private fun createKickRequest(url: String): Request {
+        return Request.Builder()
+            .url(url)
+            .apply {
+                KickSession.accessToken?.let { token ->
+                    addHeader("Authorization", "Bearer $token")
+                }
+            }
+            .build()
+    }
 }

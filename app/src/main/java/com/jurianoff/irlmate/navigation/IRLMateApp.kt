@@ -2,10 +2,15 @@ package com.jurianoff.irlmate.navigation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -13,6 +18,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.jurianoff.irlmate.ui.main.MainScreen
 import com.jurianoff.irlmate.ui.settings.*
 import com.jurianoff.irlmate.ui.theme.IRLMateTheme
+import kotlinx.coroutines.delay
 import java.util.*
 
 @Composable
@@ -48,16 +54,35 @@ fun IRLMateApp(startDestination: String? = null) {
             }
 
             val navController = rememberNavController()
+            var sessionLoaded by remember { mutableStateOf(false) }
 
             LaunchedEffect(Unit) {
                 ThemeSettings.loadTheme(context)
+                KickSession.loadSession(context)
+                delay(1000) // ✅ Wymuszona długość splash screenu
+                sessionLoaded = true
             }
 
-            // 🔄 Rozwijamy startDestination
+            if (!sessionLoaded) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(id = com.jurianoff.irlmate.R.string.loading),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+                return@IRLMateTheme
+            }
+
             val initialStart = if (startDestination == "open_settings_after_start") "main"
             else (startDestination ?: "main")
 
-            // 🚀 Po starcie z parametrem – idź od razu do settings
             LaunchedEffect(startDestination) {
                 if (startDestination == "open_settings_after_start") {
                     navController.navigate("settings")

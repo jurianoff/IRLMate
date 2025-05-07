@@ -5,25 +5,22 @@ import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 
-object KickSession {
+object TwitchSession {
 
-    // ─── In‑memory ────────────────────────────────────────────────────────────────
+    // ─── In-memory ───────────────────────────────────────────────────────────────
     var accessToken: String? = null
     var refreshToken: String? = null
-    var tokenType: String = "Bearer"
-    var expiresInSeconds: Long = 7200
     var userId: String? = null
     var username: String? = null
-    var channelId: String? = null
-    var showChatAndStatus: Boolean = true
+    var showChatAndStatus: Boolean = false
+    var isLoaded: Boolean = false
+        private set
 
-    // ─── DataStore ────────────────────────────────────────────────────────────────
-    private val Context.dataStore by preferencesDataStore(name = "kick_session")
+    // ─── DataStore ───────────────────────────────────────────────────────────────
+    private val Context.dataStore by preferencesDataStore(name = "twitch_session")
 
     private val KEY_ACCESS = stringPreferencesKey("access_token")
     private val KEY_REFRESH = stringPreferencesKey("refresh_token")
-    private val KEY_TYPE = stringPreferencesKey("token_type")
-    private val KEY_EXPIRES = stringPreferencesKey("expires_in")
     private val KEY_USER_ID = stringPreferencesKey("user_id")
     private val KEY_USERNAME = stringPreferencesKey("username")
     private val KEY_SHOW_CHAT = booleanPreferencesKey("show_chat_and_status")
@@ -44,33 +41,23 @@ object KickSession {
         accessToken: String,
         refreshToken: String,
         userId: String?,
-        username: String?,
-        tokenType: String = "Bearer",
-        expiresInSeconds: Long = 7200
+        username: String?
     ) {
         this.accessToken = accessToken
         this.refreshToken = refreshToken
         this.userId = userId
         this.username = username
-        this.tokenType = tokenType
-        this.expiresInSeconds = expiresInSeconds
 
         context.dataStore.edit { prefs ->
             prefs[KEY_ACCESS] = accessToken
             prefs[KEY_REFRESH] = refreshToken
             userId?.let { prefs[KEY_USER_ID] = it }
             username?.let { prefs[KEY_USERNAME] = it }
-            prefs[KEY_TYPE] = tokenType
-            prefs[KEY_EXPIRES] = expiresInSeconds.toString()
             prefs[KEY_SHOW_CHAT] = showChatAndStatus
         }
 
-        println("💾 [KickSession] Zapisywanie sesji:")
-        println("     -> $username (ID: $userId)")
+        println("💾 [TwitchSession] Zapisano sesję: $username")
     }
-
-    var isLoaded: Boolean = false
-        private set
 
     suspend fun loadSession(context: Context) {
         context.dataStore.data.first().let { prefs ->
@@ -78,9 +65,7 @@ object KickSession {
             refreshToken = prefs[KEY_REFRESH]
             userId = prefs[KEY_USER_ID]
             username = prefs[KEY_USERNAME]
-            tokenType = prefs[KEY_TYPE] ?: "Bearer"
-            expiresInSeconds = prefs[KEY_EXPIRES]?.toLongOrNull() ?: 7200
-            showChatAndStatus = prefs[KEY_SHOW_CHAT] ?: true
+            showChatAndStatus = prefs[KEY_SHOW_CHAT] ?: false
         }
         isLoaded = true
     }
@@ -90,11 +75,9 @@ object KickSession {
         refreshToken = null
         userId = null
         username = null
-        tokenType = "Bearer"
-        expiresInSeconds = 7200
-        showChatAndStatus = true
+        showChatAndStatus = false
         context.dataStore.edit { it.clear() }
 
-        println("🧹 [KickSession] Wyczyszczono sesję")
+        println("🧹 [TwitchSession] Wyczyszczono sesję")
     }
 }

@@ -18,13 +18,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jurianoff.irlmate.R
-import com.jurianoff.irlmate.data.kick.KickStatusChecker
-import com.jurianoff.irlmate.data.kick.KickStreamStatus
-import com.jurianoff.irlmate.data.twitch.TwitchStatusChecker
-import com.jurianoff.irlmate.data.twitch.TwitchStreamStatus
+import com.jurianoff.irlmate.data.platform.KickPlatform
+import com.jurianoff.irlmate.data.platform.StreamStatus
+import com.jurianoff.irlmate.data.platform.TwitchPlatform
 import com.jurianoff.irlmate.ui.main.components.ChatList
 import com.jurianoff.irlmate.ui.main.components.StreamStatusBar
-import com.jurianoff.irlmate.ui.settings.KickSession
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,18 +33,27 @@ fun MainScreen(
 ) {
     val messages = viewModel.messages
 
-    var kickStatus by remember { mutableStateOf<KickStreamStatus?>(null) }
-    var twitchStatus by remember { mutableStateOf<TwitchStreamStatus?>(null) }
+    // Lista aktywnych platform
+    val activePlatforms = remember {
+        listOf(
+            KickPlatform(),
+            TwitchPlatform()
+        ).filter { it.isLoggedIn && it.isEnabled }
+    }
 
-    LaunchedEffect(KickSession.username) {
+    // Statusy streamów
+    var streamStatuses by remember { mutableStateOf<Map<String, StreamStatus>>(emptyMap()) }
+
+    LaunchedEffect(Unit) {
         while (true) {
-            kickStatus = if (KickSession.isLoggedIn() && KickSession.showChatAndStatus) {
-                KickSession.username?.let { KickStatusChecker.getStreamStatus(it) }
-            } else null
-
-            // Twitch – tymczasowo jak wcześniej
-            twitchStatus = TwitchStatusChecker.getStreamStatus("jurianoff") // lub zastąp w przyszłości dynamicznie
-
+            val newStatuses = mutableMapOf<String, StreamStatus>()
+            for (platform in activePlatforms) {
+                val status = platform.getStreamStatus()
+                if (status != null) {
+                    newStatuses[platform.name] = status
+                }
+            }
+            streamStatuses = newStatuses
             delay(10_000)
         }
     }
@@ -95,28 +102,32 @@ fun MainScreen(
             )
         }
     ) { padding ->
-        val chatVisible = KickSession.isLoggedIn() && KickSession.showChatAndStatus
-
-        if (isLandscape) {
-            Row(
+        if (activePlatforms.isEmpty()) {
+            Box(
                 modifier = Modifier
                     .padding(padding)
-                    .fillMaxSize()
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                Column(
+                Text(stringResource(R.string.no_active_platforms))
+            }
+        } else {
+            if (isLandscape) {
+                Row(
                     modifier = Modifier
-                        .weight(1f)
-                        .padding(16.dp)
+                        .padding(padding)
+                        .fillMaxSize()
                 ) {
-                    if (chatVisible) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(16.dp)
+                    ) {
                         StreamStatusBar(
-                            kickStatus = kickStatus,
-                            twitchStatus = twitchStatus,
+                            statuses = streamStatuses.values.toList(),
                             vertical = true
                         )
                     }
-                }
-                if (chatVisible) {
                     ChatList(
                         messages = messages,
                         modifier = Modifier
@@ -124,17 +135,14 @@ fun MainScreen(
                             .fillMaxHeight()
                     )
                 }
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxSize()
-            ) {
-                if (chatVisible) {
+            } else {
+                Column(
+                    modifier = Modifier
+                        .padding(padding)
+                        .fillMaxSize()
+                ) {
                     StreamStatusBar(
-                        kickStatus = kickStatus,
-                        twitchStatus = twitchStatus
+                        statuses = streamStatuses.values.toList()
                     )
                     ChatList(
                         messages = messages,

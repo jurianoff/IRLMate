@@ -39,4 +39,7 @@
     <string name="kick_auth_failed">Logowanie do Kick nie powiodło się. Spróbuj ponownie.</string>
     <string name="kick_login_failed">Nie udało się zalogować do Kick</string>
     <string name="kick_logout_success">Wylogowano z Kick</string>
+    <string name="no_active_platforms">Brak aktywnych platform</string>
+    <string name="loading">Ładowanie...</string>
+
 </resources>

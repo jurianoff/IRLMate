@@ -3,10 +3,12 @@ package com.jurianoff.irlmate.ui.main
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jurianoff.irlmate.data.kick.KickChatClient
 import com.jurianoff.irlmate.data.model.ChatMessage
-import com.jurianoff.irlmate.data.twitch.TwitchChatClient
+import com.jurianoff.irlmate.data.platform.KickPlatform
+import com.jurianoff.irlmate.data.platform.StreamingPlatform
+import com.jurianoff.irlmate.data.platform.TwitchPlatform
 import com.jurianoff.irlmate.ui.settings.KickSession
+import com.jurianoff.irlmate.ui.settings.TwitchSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -19,24 +21,23 @@ class ChatViewModel : ViewModel() {
     }
 
     private fun startConnections() {
-        if (KickSession.isLoggedIn() && KickSession.showChatAndStatus) {
-            val kickChannel = KickSession.username ?: return
-
-            viewModelScope.launch(Dispatchers.IO) {
-                val kick = KickChatClient(kickChannel) { message ->
-                    addMessage(message)
-                }
-                kick.connect()
+        val platforms = buildList {
+            if (KickSession.isLoaded && KickSession.isLoggedIn() && KickSession.showChatAndStatus) {
+                add(KickPlatform())
+            }
+            if (TwitchSession.isLoaded && TwitchSession.isLoggedIn() && TwitchSession.showChatAndStatus) {
+                add(TwitchPlatform())
             }
         }
 
-        // Twitch (tymczasowo – do zastąpienia później)
-        val twitchChannel = "jurianoff"
-        viewModelScope.launch(Dispatchers.IO) {
-            val twitch = TwitchChatClient(twitchChannel) { message ->
-                addMessage(message)
+        println("🔍 [ChatViewModel] Aktywne platformy: ${platforms.map { it.name }}")
+
+        for (platform in platforms) {
+            viewModelScope.launch(Dispatchers.IO) {
+                platform.connectChat { message ->
+                    addMessage(message)
+                }
             }
-            twitch.connect()
         }
     }
 
