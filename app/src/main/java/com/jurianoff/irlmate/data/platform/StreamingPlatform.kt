@@ -9,7 +9,8 @@ sealed class StreamingPlatform(
     val isLoggedIn: Boolean,
     val isEnabled: Boolean,
     val getStreamStatus: suspend () -> StreamStatus?,
-    val connectChat: suspend (onMessage: (ChatMessage) -> Unit) -> Unit
+    val connectChat: suspend (onMessage: (ChatMessage) -> Unit) -> Unit,
+    val disconnectChat: () -> Unit = {} // 👈 dodany nowy parametr
 )
 
 sealed class StreamStatus {

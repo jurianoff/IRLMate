@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.jurianoff.irlmate.MainActivity
 import com.jurianoff.irlmate.R
@@ -11,8 +12,6 @@ import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
-import android.util.Log
-
 
 class KickAuthRedirectActivity : Activity() {
 
@@ -51,6 +50,7 @@ class KickAuthRedirectActivity : Activity() {
                 val client = OkHttpClient()
                 val request = Request.Builder()
                     .url("https://kick.com/api/v2/channels/$username")
+                    .header("Authorization", "Bearer $accessToken")
                     .header("User-Agent", "Mozilla/5.0")
                     .build()
 
@@ -66,14 +66,16 @@ class KickAuthRedirectActivity : Activity() {
                 val json = JSONObject(body)
                 val userId = json.optString("id", null)
                 val actualUsername = json.optString("slug", username)
+                val channelId = userId
+                val chatroomId = json.optJSONObject("chatroom")?.optString("id", null)
 
-                if (userId.isNullOrEmpty()) {
+                if (userId.isNullOrEmpty() || channelId.isNullOrEmpty() || chatroomId.isNullOrEmpty()) {
                     showToast(R.string.kick_auth_failed)
                     finishOnMain()
                     return@launch
                 }
 
-                Log.i("KickOAuth", "✅ Zalogowano jako $actualUsername (ID: $userId)")
+                Log.i("KickOAuth", "✅ Zalogowano jako $actualUsername (ID: $userId, ChannelID: $channelId, ChatroomID: $chatroomId)")
 
                 withContext(Dispatchers.Main) {
                     KickSession.saveSession(
@@ -82,6 +84,8 @@ class KickAuthRedirectActivity : Activity() {
                         refreshToken = refreshToken,
                         userId = userId,
                         username = actualUsername,
+                        channelId = channelId,
+                        chatroomId = chatroomId,
                         tokenType = tokenType,
                         expiresInSeconds = expiresIn
                     )

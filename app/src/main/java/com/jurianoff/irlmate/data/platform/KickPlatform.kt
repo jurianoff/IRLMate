@@ -9,23 +9,29 @@ class KickPlatform : StreamingPlatform(
     isLoggedIn = KickSession.isLoggedIn(),
     isEnabled = KickSession.showChatAndStatus,
     getStreamStatus = {
-        KickSession.username?.let { username ->
-            KickStatusChecker.getStreamStatus(username)?.let { status ->
-                StreamStatus.Kick(status)
-            }
-        }
+        val username = KickSession.username
+        val status = if (username != null) KickStatusChecker.getStreamStatus(username) else null
+        println("ℹ️ [KickPlatform] Status streama: $status")
+        status?.let { StreamStatus.Kick(it) }
     },
     connectChat = { onMessage ->
+        val chatroomId = KickSession.chatroomId
         val username = KickSession.username
-        val channelId = KickSession.channelId
+        println("🔌 [KickPlatform] connectChat wywołany dla: $username (chatroomId=$chatroomId)")
 
-        println("🔌 [KickPlatform] connectChat wywołany dla: $username (channelId=$channelId)")
-
-        if (channelId != null) {
-            val client = PusherKickChatClient(channelId, onMessage)
-            client.connect()
+        if (chatroomId != null) {
+            chatClient = PusherKickChatClient(onMessage)
+            chatClient?.connect()
         } else {
-            println("⚠️ [KickPlatform] channelId == null – nie można połączyć z czatem")
+            println("⚠️ [KickPlatform] chatroomId == null – nie można połączyć z czatem")
         }
+    },
+    disconnectChat = {
+        chatClient?.disconnect()
+        println("📴 [KickPlatform] Rozłączono z Kick")
     }
-)
+) {
+    companion object {
+        private var chatClient: PusherKickChatClient? = null
+    }
+}

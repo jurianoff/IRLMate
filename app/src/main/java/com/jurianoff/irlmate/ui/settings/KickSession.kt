@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.first
 
 object KickSession {
 
-    // ─── In‑memory ────────────────────────────────────────────────────────────────
     var accessToken: String? = null
     var refreshToken: String? = null
     var tokenType: String = "Bearer"
@@ -15,9 +14,9 @@ object KickSession {
     var userId: String? = null
     var username: String? = null
     var channelId: String? = null
+    var chatroomId: String? = null
     var showChatAndStatus: Boolean = true
 
-    // ─── DataStore ────────────────────────────────────────────────────────────────
     private val Context.dataStore by preferencesDataStore(name = "kick_session")
 
     private val KEY_ACCESS = stringPreferencesKey("access_token")
@@ -26,10 +25,16 @@ object KickSession {
     private val KEY_EXPIRES = stringPreferencesKey("expires_in")
     private val KEY_USER_ID = stringPreferencesKey("user_id")
     private val KEY_USERNAME = stringPreferencesKey("username")
+    private val KEY_CHANNEL_ID = stringPreferencesKey("channel_id")
+    private val KEY_CHATROOM_ID = stringPreferencesKey("chatroom_id")
     private val KEY_SHOW_CHAT = booleanPreferencesKey("show_chat_and_status")
 
     fun isLoggedIn(): Boolean {
-        return !accessToken.isNullOrEmpty() && !userId.isNullOrEmpty() && !username.isNullOrEmpty()
+        return !accessToken.isNullOrEmpty()
+                && !userId.isNullOrEmpty()
+                && !username.isNullOrEmpty()
+                && !channelId.isNullOrEmpty()
+                && !chatroomId.isNullOrEmpty()
     }
 
     suspend fun setShowChatAndStatus(context: Context, show: Boolean) {
@@ -45,6 +50,8 @@ object KickSession {
         refreshToken: String,
         userId: String?,
         username: String?,
+        channelId: String?,
+        chatroomId: String?,
         tokenType: String = "Bearer",
         expiresInSeconds: Long = 7200
     ) {
@@ -52,6 +59,8 @@ object KickSession {
         this.refreshToken = refreshToken
         this.userId = userId
         this.username = username
+        this.channelId = channelId
+        this.chatroomId = chatroomId
         this.tokenType = tokenType
         this.expiresInSeconds = expiresInSeconds
 
@@ -60,13 +69,15 @@ object KickSession {
             prefs[KEY_REFRESH] = refreshToken
             userId?.let { prefs[KEY_USER_ID] = it }
             username?.let { prefs[KEY_USERNAME] = it }
+            channelId?.let { prefs[KEY_CHANNEL_ID] = it }
+            chatroomId?.let { prefs[KEY_CHATROOM_ID] = it }
             prefs[KEY_TYPE] = tokenType
             prefs[KEY_EXPIRES] = expiresInSeconds.toString()
             prefs[KEY_SHOW_CHAT] = showChatAndStatus
         }
 
         println("💾 [KickSession] Zapisywanie sesji:")
-        println("     -> $username (ID: $userId)")
+        println("     -> $username (ID: $userId, ChannelID: $channelId, ChatroomID: $chatroomId)")
     }
 
     var isLoaded: Boolean = false
@@ -78,6 +89,8 @@ object KickSession {
             refreshToken = prefs[KEY_REFRESH]
             userId = prefs[KEY_USER_ID]
             username = prefs[KEY_USERNAME]
+            channelId = prefs[KEY_CHANNEL_ID]
+            chatroomId = prefs[KEY_CHATROOM_ID]
             tokenType = prefs[KEY_TYPE] ?: "Bearer"
             expiresInSeconds = prefs[KEY_EXPIRES]?.toLongOrNull() ?: 7200
             showChatAndStatus = prefs[KEY_SHOW_CHAT] ?: true
@@ -90,6 +103,8 @@ object KickSession {
         refreshToken = null
         userId = null
         username = null
+        channelId = null
+        chatroomId = null
         tokenType = "Bearer"
         expiresInSeconds = 7200
         showChatAndStatus = true
