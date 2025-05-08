@@ -11,6 +11,7 @@ import okhttp3.WebSocketListener
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class TwitchChatClient(
@@ -31,15 +32,17 @@ class TwitchChatClient(
             .url("wss://irc-ws.chat.twitch.tv:443")
             .build()
 
+        val randomNick = "justinfan" + (1000..9999).random()
+
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 println("✅ [TwitchChatClient] Połączono z IRC Twitch")
 
                 webSocket.send("CAP REQ :twitch.tv/tags")
-                webSocket.send("NICK justinfan12345")
+                webSocket.send("NICK $randomNick")
                 webSocket.send("JOIN #$channelName")
 
-                println("📨 [TwitchChatClient] Dołączono do kanału: #$channelName")
+                println("📨 [TwitchChatClient] Dołączono do kanału: #$channelName jako $randomNick")
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -48,27 +51,30 @@ class TwitchChatClient(
                     return
                 }
 
-                val lines = text.split("\r\n")
+                val lines = text.split("\r\n").filter { it.isNotBlank() }
+
                 for (line in lines) {
-                    if (line.contains("PRIVMSG")) {
-                        val user = line.substringAfter("display-name=").substringBefore(";")
-                        val message = line.substringAfter("PRIVMSG #$channelName :")
-                        val color =
-                            line.substringAfter("color=").substringBefore(";").ifBlank { null }
+                    if ("PRIVMSG" in line && "display-name=" in line) {
+                        try {
+                            val user = line.substringAfter("display-name=").substringBefore(";")
+                            val message = line.substringAfter("PRIVMSG #$channelName :").trim()
+                            val color = line.substringAfter("color=").substringBefore(";").ifBlank { null }
 
-                        val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault())
-                            .format(Date())
+                            val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault())
+                                .format(Date())
 
-                        onMessageReceived(
-                            ChatMessage(
-                                platform = "Twitch",
-                                user = user,
-                                message = message,
-                                userColor = color,
-                                timestamp = timestamp
+                            onMessageReceived(
+                                ChatMessage(
+                                    platform = "Twitch",
+                                    user = user,
+                                    message = message,
+                                    userColor = color,
+                                    timestamp = timestamp
+                                )
                             )
-                        )
-
+                        } catch (e: Exception) {
+                            println("⚠️ [TwitchChatClient] Błąd parsowania linii: $line")
+                        }
                     }
                 }
             }
@@ -77,5 +83,10 @@ class TwitchChatClient(
                 println("❌ [TwitchChatClient] Błąd połączenia: ${t.message}")
             }
         })
+    }
+
+    fun disconnect() {
+        webSocket?.close(1000, "Disconnected by user")
+        println("🔌 [TwitchChatClient] Połączenie z IRC zostało zakończone")
     }
 }

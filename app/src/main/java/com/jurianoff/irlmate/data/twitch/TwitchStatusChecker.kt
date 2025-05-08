@@ -1,10 +1,14 @@
 package com.jurianoff.irlmate.data.twitch
 
+import com.jurianoff.irlmate.ui.settings.TwitchSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
+import com.jurianoff.irlmate.BuildConfig
+
+
 
 data class TwitchStreamStatus(
     val isLive: Boolean,
@@ -13,19 +17,29 @@ data class TwitchStreamStatus(
 
 object TwitchStatusChecker {
     private val client = OkHttpClient()
-    private const val CLIENT_ID = "gp762nuuoqcoxypju8c569th9wz7q5"
-    private const val ACCESS_TOKEN = "bq6sern242s2kkoe24bf8vigq8doo2"
 
-    suspend fun getStreamStatus(channelName: String): TwitchStreamStatus = withContext(Dispatchers.IO) {
+    suspend fun getStreamStatus(): TwitchStreamStatus? = withContext(Dispatchers.IO) {
+        val userId = TwitchSession.userId
+        val accessToken = TwitchSession.accessToken
+        val clientId = BuildConfig.TWITCH_CLIENT_ID
+
+        if (userId.isNullOrEmpty() || accessToken.isNullOrEmpty()) {
+            println("⚠️ [TwitchStatusChecker] Brak wymaganych danych – użytkownik nie jest zalogowany.")
+            return@withContext null
+        }
+
+        val request = Request.Builder()
+            .url("https://api.twitch.tv/helix/streams?user_id=$userId")
+            .addHeader("Client-ID", clientId)
+            .addHeader("Authorization", "Bearer $accessToken")
+            .build()
+
         try {
-            val request = Request.Builder()
-                .url("https://api.twitch.tv/helix/streams?user_login=$channelName")
-                .addHeader("Client-ID", CLIENT_ID)
-                .addHeader("Authorization", "Bearer $ACCESS_TOKEN")
-                .build()
-
             client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) return@withContext TwitchStreamStatus(false, null)
+                if (!response.isSuccessful) {
+                    println("⚠️ [TwitchStatusChecker] Nieudane zapytanie: ${response.code}")
+                    return@withContext TwitchStreamStatus(false, null)
+                }
 
                 val body = response.body?.string() ?: return@withContext TwitchStreamStatus(false, null)
                 val json = JSONObject(body)
@@ -40,8 +54,8 @@ object TwitchStatusChecker {
                 return@withContext TwitchStreamStatus(false, null)
             }
         } catch (e: Exception) {
-            println("❌ Błąd pobierania statusu Twitch: ${e.message}")
-            return@withContext TwitchStreamStatus(false, null)
+            println("❌ [TwitchStatusChecker] Błąd: ${e.message}")
+            return@withContext null
         }
     }
 }

@@ -1,3 +1,5 @@
+val TWITCH_CLIENT_ID: String by project
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -15,6 +17,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "TWITCH_CLIENT_ID", "\"$TWITCH_CLIENT_ID\"")
     }
 
     buildTypes {
@@ -32,7 +35,11 @@ android {
     }
     kotlinOptions { jvmTarget = "11" }
 
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        buildConfig = true // 👈 to dodaj
+    }
+
 
     composeOptions {                     // compiler 1.5 ⇒ obsługuje Compose 1.5.x
         kotlinCompilerExtensionVersion = "1.5.3"
