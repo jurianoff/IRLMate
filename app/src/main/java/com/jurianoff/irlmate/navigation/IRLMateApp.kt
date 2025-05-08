@@ -59,7 +59,8 @@ fun IRLMateApp(startDestination: String? = null) {
             LaunchedEffect(Unit) {
                 ThemeSettings.loadTheme(context)
                 KickSession.loadSession(context)
-                delay(1000) // ✅ Wymuszona długość splash screenu
+                TwitchSession.loadSession(context) // ✅ Twitch
+                delay(1000)
                 sessionLoaded = true
             }
 
@@ -101,11 +102,19 @@ fun IRLMateApp(startDestination: String? = null) {
                         onBack = { navController.popBackStack() },
                         onNavigateToKickLogin = {
                             navController.navigate("kick_enter_username")
+                        },
+                        onNavigateToTwitchLogin = {
+                            navController.navigate("twitch_login") // ✅ nowa nawigacja
                         }
                     )
                 }
                 composable("kick_enter_username") {
                     KickEnterUsernameScreen(
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable("twitch_login") {
+                    TwitchLoginScreen(
                         onBack = { navController.popBackStack() }
                     )
                 }

@@ -41,5 +41,11 @@
     <string name="kick_logout_success">Wylogowano z Kick</string>
     <string name="no_active_platforms">Brak aktywnych platform</string>
     <string name="loading">Ładowanie...</string>
+    <string name="twitch_login_title">Zaloguj się do Twitch</string>
+    <string name="twitch_login_description">Aby połączyć się z czatem Twitch i sprawdzać status transmisji, zaloguj się do swojego konta Twitch.</string>
+    <string name="twitch_login_button">Zaloguj przez Twitch</string>
+    <string name="twitch_logout_success">Wylogowano z Twitch</string>
+
+
 
 </resources>

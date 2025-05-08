@@ -41,6 +41,11 @@
     <string name="kick_logout_success">Logged out from Kick</string>
     <string name="no_active_platforms">No active platforms</string>
     <string name="loading">Loading...</string>
+    <string name="twitch_login_title">Log in to Twitch</string>
+    <string name="twitch_login_description">To connect Twitch chat and check stream status, log in to your Twitch account.</string>
+    <string name="twitch_login_button">Log in with Twitch</string>
+    <string name="twitch_logout_success">Logged out from Twitch</string>
+
 
 
 </resources>

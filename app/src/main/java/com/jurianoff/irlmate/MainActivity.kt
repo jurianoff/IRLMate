@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.lifecycleScope
 import com.jurianoff.irlmate.navigation.IRLMateApp
 import com.jurianoff.irlmate.ui.settings.KickSession
+import com.jurianoff.irlmate.ui.settings.TwitchSession
 import com.jurianoff.irlmate.ui.settings.ThemeSettings
 import kotlinx.coroutines.launch
 
@@ -18,9 +19,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. Załaduj sesję Kick
+        // 1. Załaduj sesje
         lifecycleScope.launch {
             KickSession.loadSession(this@MainActivity)
+            TwitchSession.loadSession(this@MainActivity)
         }
 
         // 2. Sprawdź, czy użytkownik wraca z logowania
