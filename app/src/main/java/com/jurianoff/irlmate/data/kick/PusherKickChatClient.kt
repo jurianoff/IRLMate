@@ -54,6 +54,7 @@ class PusherKickChatClient(
                 val username = messageObj.getJSONObject("sender").getString("username")
                 val message = messageObj.getString("content")
                 val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                val createdAt = System.currentTimeMillis()
 
                 println("💬 [PusherKickChatClient] $username: $message")
 
@@ -63,7 +64,8 @@ class PusherKickChatClient(
                         user = username,
                         message = message,
                         userColor = null,
-                        timestamp = timestamp
+                        timestamp = timestamp,
+                        createdAt = createdAt
                     )
                 )
             } catch (e: Exception) {
@@ -73,7 +75,6 @@ class PusherKickChatClient(
 
         pusher!!.connect()
     }
-
 
     fun disconnect() {
         pusher?.disconnect()

@@ -18,45 +18,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jurianoff.irlmate.R
-import com.jurianoff.irlmate.data.platform.KickPlatform
-import com.jurianoff.irlmate.data.platform.StreamStatus
-import com.jurianoff.irlmate.data.platform.TwitchPlatform
+import com.jurianoff.irlmate.ui.chat.KickChatViewModel
+import com.jurianoff.irlmate.ui.chat.TwitchChatViewModel
 import com.jurianoff.irlmate.ui.main.components.ChatList
 import com.jurianoff.irlmate.ui.main.components.StreamStatusBar
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    onSettingsClick: () -> Unit,
-    viewModel: ChatViewModel = viewModel()
+    onSettingsClick: () -> Unit
 ) {
-    val messages = viewModel.messages
+    // ✅ ViewModel zgodny z cyklem życia
+    val kickViewModel: KickChatViewModel = viewModel()
+    val twitchViewModel: TwitchChatViewModel = viewModel()
+    val aggregatedViewModel: AggregatedChatViewModel = viewModel(
+        factory = AggregatedChatViewModelFactory(kickViewModel, twitchViewModel)
+    )
 
-    // Lista aktywnych platform
-    val activePlatforms = remember {
-        listOf(
-            KickPlatform(),
-            TwitchPlatform()
-        ).filter { it.isLoggedIn && it.isEnabled }
-    }
-
-    // Statusy streamów
-    var streamStatuses by remember { mutableStateOf<Map<String, StreamStatus>>(emptyMap()) }
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            val newStatuses = mutableMapOf<String, StreamStatus>()
-            for (platform in activePlatforms) {
-                val status = platform.getStreamStatus()
-                if (status != null) {
-                    newStatuses[platform.name] = status
-                }
-            }
-            streamStatuses = newStatuses
-            delay(10_000)
-        }
-    }
+    val messages by aggregatedViewModel.messages.collectAsState()
+    val streamStatuses by aggregatedViewModel.streamStatuses.collectAsState()
 
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -102,7 +82,7 @@ fun MainScreen(
             )
         }
     ) { padding ->
-        if (activePlatforms.isEmpty()) {
+        if (streamStatuses.isEmpty()) {
             Box(
                 modifier = Modifier
                     .padding(padding)

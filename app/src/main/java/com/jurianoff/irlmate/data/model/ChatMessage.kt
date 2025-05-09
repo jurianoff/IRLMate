@@ -8,6 +8,6 @@ data class ChatMessage(
     val user: String,
     val message: String,
     val userColor: String? = null,
-    val timestamp: String = ""
-
+    val createdAt: Long = System.currentTimeMillis(), // używane do sortowania
+    val timestamp: String = "" // tylko do wyświetlania (np. "13:17")
 )

@@ -35,43 +35,44 @@ fun ChatList(
 
     val isAtBottom by remember {
         derivedStateOf {
-            val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-            lastVisible != null && lastVisible >= messages.lastIndex - 1
+            val layout = listState.layoutInfo
+            val lastVisibleIndex = layout.visibleItemsInfo.lastOrNull()?.index
+            lastVisibleIndex != null && lastVisibleIndex >= layout.totalItemsCount - 2
         }
     }
 
-    var showFab by remember { mutableStateOf(false) }
     var hasNewMessages by remember { mutableStateOf(false) }
+    var lastMessageCount by remember { mutableStateOf(0) }
 
-    LaunchedEffect(isAtBottom) {
+    // Autoscroll na start jeśli lista niepusta
+    LaunchedEffect(Unit) {
         if (messages.isNotEmpty()) {
-            showFab = !isAtBottom
-            if (isAtBottom) {
-                hasNewMessages = false
-            }
-        } else {
-            showFab = false
-            hasNewMessages = false
-        }
-    }
-
-    LaunchedEffect(messages.size) {
-        if (messages.isNotEmpty()) {
-            if (isAtBottom) {
-                scope.launch {
-                    listState.animateScrollToItem(messages.lastIndex)
-                }
-            } else {
-                hasNewMessages = true
-            }
-        }
-    }
-
-    LaunchedEffect(messages.size) {
-        if (isAtBottom && messages.isNotEmpty()) {
             scope.launch {
-                listState.animateScrollToItem(messages.lastIndex)
+                listState.scrollToItem(messages.lastIndex)
             }
+        }
+    }
+
+    // Scroll do nowej wiadomości jeśli jesteśmy na dole
+    LaunchedEffect(messages.size) {
+        if (messages.isNotEmpty()) {
+            if (messages.size > lastMessageCount) {
+                if (isAtBottom) {
+                    scope.launch {
+                        listState.animateScrollToItem(messages.lastIndex)
+                    }
+                } else {
+                    hasNewMessages = true
+                }
+            }
+            lastMessageCount = messages.size
+        }
+    }
+
+    // Resetuj znacznik nowych wiadomości gdy jesteśmy przy końcu
+    LaunchedEffect(isAtBottom) {
+        if (isAtBottom) {
+            hasNewMessages = false
         }
     }
 
@@ -86,13 +87,11 @@ fun ChatList(
                 items = messages,
                 key = { _, msg -> msg.id }
             ) { _, message ->
-                ChatMessageItem(
-                    message = message,
-                )
+                ChatMessageItem(message = message)
             }
         }
 
-        if (showFab) {
+        if (messages.isNotEmpty() && !isAtBottom) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -129,6 +128,7 @@ fun ChatList(
                         onClick = {
                             scope.launch {
                                 listState.animateScrollToItem(messages.lastIndex)
+                                hasNewMessages = false
                             }
                         },
                         containerColor = MaterialTheme.colorScheme.primary,

@@ -11,7 +11,6 @@ import okhttp3.WebSocketListener
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class TwitchChatClient(
@@ -60,8 +59,8 @@ class TwitchChatClient(
                             val message = line.substringAfter("PRIVMSG #$channelName :").trim()
                             val color = line.substringAfter("color=").substringBefore(";").ifBlank { null }
 
-                            val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault())
-                                .format(Date())
+                            val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                            val createdAt = System.currentTimeMillis()
 
                             onMessageReceived(
                                 ChatMessage(
@@ -69,7 +68,8 @@ class TwitchChatClient(
                                     user = user,
                                     message = message,
                                     userColor = color,
-                                    timestamp = timestamp
+                                    timestamp = timestamp,
+                                    createdAt = createdAt
                                 )
                             )
                         } catch (e: Exception) {
