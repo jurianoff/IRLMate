@@ -3,18 +3,19 @@ package com.jurianoff.irlmate.data.platform
 import com.jurianoff.irlmate.data.kick.KickStatusChecker
 import com.jurianoff.irlmate.data.kick.PusherKickChatClient
 import com.jurianoff.irlmate.ui.settings.KickSession
+import com.jurianoff.irlmate.data.model.ChatMessage
 
 class KickPlatform : StreamingPlatform(
     name = "Kick",
-    isLoggedIn = KickSession.isLoggedIn(),
-    isEnabled = KickSession.showChatAndStatus,
-    getStreamStatus = {
+    isLoggedInProvider = { KickSession.isLoggedIn() },
+    isEnabledProvider = { KickSession.showChatAndStatus },
+    getStreamStatus = suspend {
         val username = KickSession.username
         val status = if (username != null) KickStatusChecker.getStreamStatus(username) else null
         println("ℹ️ [KickPlatform] Status streama: $status")
         status?.let { StreamStatus.Kick(it) }
     },
-    connectChat = { onMessage ->
+    connectChat = { onMessage: (ChatMessage) -> Unit ->
         val chatroomId = KickSession.chatroomId
         val username = KickSession.username
         println("🔌 [KickPlatform] connectChat wywołany dla: $username (chatroomId=$chatroomId)")
