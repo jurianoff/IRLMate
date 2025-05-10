@@ -1,5 +1,4 @@
 @file:JvmName("KickLoginScreenKt")
-
 package com.jurianoff.irlmate.ui.settings
 
 import android.content.Context
@@ -25,13 +24,34 @@ fun KickEnterUsernameScreen(
     var username by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
 
+    // Kolory niezależne od systemowego motywu – bazują wyłącznie na aktywnym schemacie
+    val textFieldColors = TextFieldDefaults.colors(
+        focusedTextColor        = MaterialTheme.colorScheme.onSurface,
+        unfocusedTextColor      = MaterialTheme.colorScheme.onSurface,
+        disabledTextColor       = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+        errorTextColor          = MaterialTheme.colorScheme.error,
+        focusedContainerColor   = MaterialTheme.colorScheme.surface,
+        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+        errorContainerColor     = MaterialTheme.colorScheme.surface,
+        cursorColor             = MaterialTheme.colorScheme.primary,
+        errorCursorColor        = MaterialTheme.colorScheme.error,
+        focusedIndicatorColor   = MaterialTheme.colorScheme.primary,
+        unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
+        errorIndicatorColor     = MaterialTheme.colorScheme.error,
+        focusedLabelColor       = MaterialTheme.colorScheme.primary,
+        unfocusedLabelColor     = MaterialTheme.colorScheme.onSurface
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.kick_login_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
                     }
                 }
             )
@@ -47,9 +67,9 @@ fun KickEnterUsernameScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
-            OutlinedTextField(
+            TextField(
                 value = username,
                 onValueChange = {
                     username = it.trimStart()
@@ -61,7 +81,8 @@ fun KickEnterUsernameScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.medium,
+                colors = textFieldColors
             )
 
             if (showError) {
@@ -72,26 +93,24 @@ fun KickEnterUsernameScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
 
             Button(
                 onClick = {
                     val trimmed = username.trim()
-                    if (trimmed.isEmpty() || trimmed.contains(" ")) {
+                    if (trimmed.isBlank() || trimmed.contains(' ')) {
                         showError = true
                     } else {
                         context.getSharedPreferences("kick_auth", Context.MODE_PRIVATE)
                             .edit().putString("username", trimmed).apply()
 
-                        val loginUrl = Uri.parse("https://ah2d6m1qy4.execute-api.eu-central-1.amazonaws.com/auth/kick/start?username=$trimmed")
-                        val intent = Intent(Intent.ACTION_VIEW, loginUrl).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // zabezpieczenie Compose
-                        }
+                        val loginUrl =
+                            Uri.parse("https://ah2d6m1qy4.execute-api.eu-central-1.amazonaws.com/auth/kick/start?username=$trimmed")
 
-                        context.startActivity(intent)
-
-                        // 👇 NIE cofamy się — wrócimy z KickAuthRedirectActivity
-                        // onBack() tutaj NIE jest potrzebne
+                        context.startActivity(
+                            Intent(Intent.ACTION_VIEW, loginUrl)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        )
                     }
                 },
                 modifier = Modifier.fillMaxWidth()

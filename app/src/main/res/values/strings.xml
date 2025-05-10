@@ -45,7 +45,8 @@
     <string name="twitch_login_description">To connect Twitch chat and check stream status, log in to your Twitch account.</string>
     <string name="twitch_login_button">Log in with Twitch</string>
     <string name="twitch_logout_success">Logged out from Twitch</string>
-
+    <string name="platforms">Platforms</string>
+    <string name="appearance">Apperance</string>
 
 
 </resources>

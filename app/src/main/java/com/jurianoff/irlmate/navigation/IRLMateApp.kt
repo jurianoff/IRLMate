@@ -20,6 +20,8 @@ import com.jurianoff.irlmate.ui.settings.*
 import com.jurianoff.irlmate.ui.theme.IRLMateTheme
 import kotlinx.coroutines.delay
 import java.util.*
+import com.jurianoff.irlmate.ui.main.components.SplashScreen
+
 
 @Composable
 fun IRLMateApp(startDestination: String? = null) {
@@ -65,21 +67,10 @@ fun IRLMateApp(startDestination: String? = null) {
             }
 
             if (!sessionLoaded) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(32.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = stringResource(id = com.jurianoff.irlmate.R.string.loading),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
+                SplashScreen()
                 return@IRLMateTheme
             }
+
 
             val initialStart = if (startDestination == "open_settings_after_start") "main"
             else (startDestination ?: "main")

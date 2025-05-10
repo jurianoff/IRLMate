@@ -45,7 +45,7 @@
     <string name="twitch_login_description">Aby połączyć się z czatem Twitch i sprawdzać status transmisji, zaloguj się do swojego konta Twitch.</string>
     <string name="twitch_login_button">Zaloguj przez Twitch</string>
     <string name="twitch_logout_success">Wylogowano z Twitch</string>
-
-
+    <string name="platforms">Platformy</string>
+    <string name="appearance">Wygląd</string>
 
 </resources>

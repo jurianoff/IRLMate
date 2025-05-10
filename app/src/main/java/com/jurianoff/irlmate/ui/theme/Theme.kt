@@ -5,9 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.graphics.Color
 
+// Pomarańcz IRLMate
+private val Orange = Color(0xFFFF6D00)
+private val OrangeSecondary = Color(0xFFFF9100)
+
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFFF6D00),
-    secondary = Color(0xFFFF9100),
+    primary = Orange,
+    secondary = OrangeSecondary,
     background = Color(0xFF121212),
     surface = Color(0xFF1E1E1E),
     onPrimary = Color.Black,
@@ -17,18 +21,15 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary        = Color(0xFF6200EE),
-    secondary      = Color(0xFF03DAC6),
+    primary        = Orange,
+    secondary      = OrangeSecondary,
     background     = Color(0xFFF5F5F5),
     surface        = Color(0xFFEFEFEF),
     onPrimary      = Color.White,
     onSecondary    = Color.Black,
     onBackground   = Color.Black,
     onSurface      = Color.Black,
-
-    /* 👇 DODAJ TO: */
-    surfaceVariant = Color(0xFFE0E0E0)   // lekki, jasnoszary
-
+    surfaceVariant = Color(0xFFE0E0E0)
 )
 
 @Composable
