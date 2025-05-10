@@ -9,18 +9,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.jurianoff.irlmate.R
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.geometry.Offset
 
 @Composable
@@ -28,26 +25,34 @@ fun StatusBadge(
     iconRes: Int,
     isLive: Boolean?,
     viewers: Int?,
-    platformColor: Color // nadal wykorzystywane do ikon
+    platformColor: Color,
+    modifier: Modifier = Modifier
 ) {
-    val backgroundColor = MaterialTheme.colorScheme.surfaceVariant
+    val backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh
+
+    val textColor = when (isLive) {
+        true -> MaterialTheme.colorScheme.onSurface
+        false -> MaterialTheme.colorScheme.error
+        null -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
 
     val textShadow = Shadow(
-        color = Color.Black.copy(alpha = 0.5f),
+        color = Color.Black.copy(alpha = 0.3f),
         offset = Offset(1f, 1f),
-        blurRadius = 1f
+        blurRadius = 0.8f
     )
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .background(backgroundColor, RoundedCornerShape(12.dp))
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+        modifier = modifier
+            .shadow(2.dp, shape = RoundedCornerShape(16.dp))
+            .background(backgroundColor, RoundedCornerShape(16.dp))
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = null,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(18.dp),
             tint = Color.Unspecified
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -59,20 +64,19 @@ fun StatusBadge(
         }
 
         val viewerText = if (isLive == true && viewers != null) {
-            " • " + stringResource(R.string.viewers, viewers)
+            " · " + stringResource(R.string.viewers, viewers)
         } else ""
-
-        val textColor = when (isLive) {
-            true -> Color(0xFF53FC18) // stały kolor dla ONLINE
-            false -> MaterialTheme.colorScheme.error
-            null -> MaterialTheme.colorScheme.onSurfaceVariant
-        }
 
         Text(
             text = statusText + viewerText,
             color = textColor,
-            style = MaterialTheme.typography.bodySmall.copy(shadow = textShadow),
-            overflow = TextOverflow.Ellipsis
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontWeight = FontWeight.Medium,
+                shadow = textShadow
+            ),
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
         )
     }
 }
+

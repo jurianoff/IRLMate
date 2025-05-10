@@ -53,6 +53,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.browser:browser:1.8.0")
     implementation("com.pusher:pusher-java-client:2.4.0")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.34.0")
 
 
 

@@ -104,9 +104,9 @@ fun MainScreen(
                             .padding(16.dp)
                     ) {
                         StreamStatusBar(
-                            statuses = streamStatuses.values.toList(),
-                            vertical = true
+                            statuses = streamStatuses.values.toList()
                         )
+
                     }
                     ChatList(
                         messages = messages,

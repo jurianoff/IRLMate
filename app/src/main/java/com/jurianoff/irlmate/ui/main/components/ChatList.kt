@@ -33,116 +33,120 @@ fun ChatList(
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
+    /* Czy AKTUALNIE jesteśmy na dole */
     val isAtBottom by remember {
         derivedStateOf {
             val layout = listState.layoutInfo
-            val lastVisibleIndex = layout.visibleItemsInfo.lastOrNull()?.index
-            lastVisibleIndex != null && lastVisibleIndex >= layout.totalItemsCount - 2
+            val last   = layout.visibleItemsInfo.lastOrNull()?.index
+            last != null && last == layout.totalItemsCount - 1
         }
     }
 
-    var hasNewMessages by remember { mutableStateOf(false) }
-    var lastMessageCount by remember { mutableStateOf(0) }
+    var hasNew   by remember { mutableStateOf(false) }
+    var lastSize by remember { mutableStateOf(0) }
 
-    // Autoscroll na start jeśli lista niepusta
+    /* Autoscroll po starcie */
     LaunchedEffect(Unit) {
         if (messages.isNotEmpty()) {
-            scope.launch {
-                listState.scrollToItem(messages.lastIndex)
-            }
+            listState.scrollToItem(messages.lastIndex, scrollOffset = -50)
         }
     }
 
-    // Scroll do nowej wiadomości jeśli jesteśmy na dole
+    /* Autoscroll przy dopływie nowych wiadomości */
     LaunchedEffect(messages.size) {
-        if (messages.isNotEmpty()) {
-            if (messages.size > lastMessageCount) {
-                if (isAtBottom) {
-                    scope.launch {
-                        listState.animateScrollToItem(messages.lastIndex)
-                    }
-                } else {
-                    hasNewMessages = true
+        if (messages.size > lastSize) {
+
+            val layout = listState.layoutInfo
+            val visibleLastIndex = layout.visibleItemsInfo.lastOrNull()?.index ?: -1
+            /*  byłem „blisko dołu”, jeśli widać 1 z ostatnich 3 starych elementów */
+            val wasNearBottom = visibleLastIndex >= lastSize - 3
+
+            if (wasNearBottom) {
+                scope.launch {
+                    listState.animateScrollToItem(messages.lastIndex, scrollOffset = -50)
                 }
+            } else {
+                hasNew = true
             }
-            lastMessageCount = messages.size
+            lastSize = messages.size
         }
     }
 
-    // Resetuj znacznik nowych wiadomości gdy jesteśmy przy końcu
-    LaunchedEffect(isAtBottom) {
-        if (isAtBottom) {
-            hasNewMessages = false
+    /* Reset znacznika NEW MESSAGES */
+    LaunchedEffect(isAtBottom) { if (isAtBottom) hasNew = false }
+
+    /* FAB widoczny, gdy nie widać ≥3 ostatnich wiadomości */
+    val showFab by remember {
+        derivedStateOf {
+            val visibleLastIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+            val totalCount       = listState.layoutInfo.totalItemsCount
+            if (visibleLastIndex == null || totalCount == 0) false
+            else (totalCount - 1 - visibleLastIndex) >= 3
         }
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier.fillMaxSize()) {
+
         LazyColumn(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            itemsIndexed(
-                items = messages,
-                key = { _, msg -> msg.id }
-            ) { _, message ->
-                ChatMessageItem(message = message)
+            itemsIndexed(messages, key = { _, m -> m.id }) { _, m ->
+                ChatMessageItem(m)
             }
         }
 
-        if (messages.isNotEmpty() && !isAtBottom) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
+        if (showFab) {
+            Column(
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 12.dp, bottom = 16.dp),
+                horizontalAlignment = Alignment.End
             ) {
-                Column(
-                    modifier = Modifier.align(Alignment.BottomEnd),
-                    horizontalAlignment = Alignment.End
+                /* Etykieta NEW MESSAGES */
+                AnimatedVisibility(
+                    visible = hasNew,
+                    enter = fadeIn() + slideInVertically { it / 2 },
+                    exit  = fadeOut() + slideOutVertically { it / 2 }
                 ) {
-                    AnimatedVisibility(
-                        visible = hasNewMessages,
-                        enter = fadeIn() + slideInVertically { it / 2 },
-                        exit = fadeOut() + slideOutVertically { it / 2 }
+                    Surface(
+                        color = Color(0xFF2C2C2C),
+                        shape = MaterialTheme.shapes.medium,
+                        shadowElevation = 4.dp
                     ) {
-                        Surface(
-                            color = Color(0xFF2C2C2C),
-                            shape = MaterialTheme.shapes.medium,
-                            tonalElevation = 0.dp,
-                            shadowElevation = 4.dp,
-                            modifier = Modifier.shadow(4.dp, shape = MaterialTheme.shapes.medium)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.new_messages),
-                                color = Color(0xFFFF9800),
-                                style = MaterialTheme.typography.labelMedium,
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    FloatingActionButton(
-                        onClick = {
-                            scope.launch {
-                                listState.animateScrollToItem(messages.lastIndex)
-                                hasNewMessages = false
-                            }
-                        },
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier
-                            .padding(end = 12.dp, bottom = 16.dp)
-                            .shadow(12.dp, shape = FloatingActionButtonDefaults.shape)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowDownward,
-                            contentDescription = stringResource(R.string.scroll_down)
+                        Text(
+                            stringResource(R.string.new_messages),
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                            style    = MaterialTheme.typography.labelMedium,
+                            color    = Color(0xFFFF9800)
                         )
                     }
                 }
+
+                Spacer(Modifier.height(8.dp))
+
+                /* FAB przewijający do dołu */
+                FloatingActionButton(
+                    onClick = {
+                        scope.launch {
+                            listState.animateScrollToItem(messages.lastIndex, scrollOffset = -50)
+                            hasNew = false
+                        }
+                    },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .padding(end = 12.dp, bottom = 16.dp) // 👈 estetyczne oddalenie od rogu
+                        .shadow(12.dp, shape = FloatingActionButtonDefaults.shape)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowDownward,
+                        contentDescription = stringResource(R.string.scroll_down)
+                    )
+                }
+
             }
         }
     }
