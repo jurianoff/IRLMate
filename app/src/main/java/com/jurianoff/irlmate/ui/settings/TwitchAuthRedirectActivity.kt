@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
 import com.jurianoff.irlmate.MainActivity
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -24,7 +23,11 @@ class TwitchAuthRedirectActivity : Activity() {
             val userId = data.getQueryParameter("user_id")
             val username = data.getQueryParameter("username")
 
-            if (!accessToken.isNullOrBlank() && !refreshToken.isNullOrBlank() && !userId.isNullOrBlank() && !username.isNullOrBlank()) {
+            if (!accessToken.isNullOrBlank()
+                && !refreshToken.isNullOrBlank()
+                && !userId.isNullOrBlank()
+                && !username.isNullOrBlank()
+            ) {
                 scope.launch {
                     TwitchSession.showChatAndStatus = true
                     TwitchSession.saveSession(
@@ -35,14 +38,20 @@ class TwitchAuthRedirectActivity : Activity() {
                         username = username
                     )
 
-                    Toast.makeText(this@TwitchAuthRedirectActivity, "Zalogowano do Twitch 🎉", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@TwitchAuthRedirectActivity,
+                        "Zalogowano do Twitch 🎉",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                    val intent = Intent(this@TwitchAuthRedirectActivity, MainActivity::class.java).apply {
-                        putExtra("navigateTo", "settings")
-                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    val intent = Intent(
+                        this@TwitchAuthRedirectActivity,
+                        MainActivity::class.java
+                    ).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        putExtra("navigateTo", "open_settings_after_start")
                     }
 
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     startActivity(intent)
                     finish()
                 }
