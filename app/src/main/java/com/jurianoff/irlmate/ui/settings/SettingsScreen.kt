@@ -31,17 +31,16 @@ fun SettingsScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    val lifecycleOwner = LocalLifecycleOwner.current
 
     var selectedLanguage by remember { mutableStateOf(ThemeSettings.languageCode) }
     var keepScreenOn by remember { mutableStateOf(ThemeSettings.keepScreenOn) }
 
-    val isTwitchLoggedIn by rememberUpdatedState(TwitchSession.isLoggedIn())
-    val twitchUsername by rememberUpdatedState(TwitchSession.username ?: "")
+    var isTwitchLoggedIn by remember { mutableStateOf(TwitchSession.isLoggedIn()) }
+    var twitchUsername by remember { mutableStateOf(TwitchSession.username ?: "") }
     var showTwitch by remember { mutableStateOf(TwitchSession.showChatAndStatus) }
 
-    val isKickLoggedIn by rememberUpdatedState(KickSession.isLoggedIn())
-    val kickUsername by rememberUpdatedState(KickSession.username ?: "")
+    var isKickLoggedIn by remember { mutableStateOf(KickSession.isLoggedIn()) }
+    var kickUsername by remember { mutableStateOf(KickSession.username ?: "") }
     var showKick by remember { mutableStateOf(KickSession.showChatAndStatus) }
 
     val darkModeKey = ThemeSettings.darkMode // ensures recomposition when theme changes
@@ -52,10 +51,7 @@ fun SettingsScreen(
                 title = { Text(stringResource(R.string.settings)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -65,10 +61,7 @@ fun SettingsScreen(
             )
         }
     ) { padding ->
-
-        /* ▶ wymuszamy pełną recompozycję po zmianie motywu */
         key(ThemeSettings.darkMode) {
-
             Column(
                 modifier = Modifier
                     .padding(padding)
@@ -77,8 +70,6 @@ fun SettingsScreen(
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-
-                /* ---------- Sekcja PLATFORMY ---------- */
                 SettingsSectionHeader(title = stringResource(R.string.platforms))
 
                 PlatformCard(
@@ -92,13 +83,9 @@ fun SettingsScreen(
                         coroutineScope.launch {
                             KickSession.clearSession(context)
                             showKick = false
-                            Toast
-                                .makeText(
-                                    context,
-                                    context.getString(R.string.kick_logout_success),
-                                    Toast.LENGTH_SHORT
-                                )
-                                .show()
+                            isKickLoggedIn = false
+                            kickUsername = ""
+                            Toast.makeText(context, context.getString(R.string.kick_logout_success), Toast.LENGTH_SHORT).show()
                         }
                     },
                     onToggle = {
@@ -118,13 +105,9 @@ fun SettingsScreen(
                         coroutineScope.launch {
                             TwitchSession.clearSession(context)
                             showTwitch = false
-                            Toast
-                                .makeText(
-                                    context,
-                                    context.getString(R.string.twitch_logout_success),
-                                    Toast.LENGTH_SHORT
-                                )
-                                .show()
+                            isTwitchLoggedIn = false
+                            twitchUsername = ""
+                            Toast.makeText(context, context.getString(R.string.twitch_logout_success), Toast.LENGTH_SHORT).show()
                         }
                     },
                     onToggle = {
@@ -133,58 +116,40 @@ fun SettingsScreen(
                     }
                 )
 
-                /* ---------- Sekcja WYGLĄD ---------- */
                 SettingsSectionHeader(title = stringResource(R.string.appearance))
 
                 ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(12.dp)) {
-                        ThemeModeOption(
-                            stringResource(R.string.light_theme),
-                            stringResource(R.string.theme_light_desc),
-                            ThemeSettings.darkMode == ThemeMode.LIGHT
-                        ) {
+                        ThemeModeOption(stringResource(R.string.light_theme), stringResource(R.string.theme_light_desc), ThemeSettings.darkMode == ThemeMode.LIGHT) {
                             ThemeSettings.darkMode = ThemeMode.LIGHT
                             coroutineScope.launch { ThemeSettings.saveTheme(context) }
                         }
-                        ThemeModeOption(
-                            stringResource(R.string.dark_theme),
-                            stringResource(R.string.theme_dark_desc),
-                            ThemeSettings.darkMode == ThemeMode.DARK
-                        ) {
+                        ThemeModeOption(stringResource(R.string.dark_theme), stringResource(R.string.theme_dark_desc), ThemeSettings.darkMode == ThemeMode.DARK) {
                             ThemeSettings.darkMode = ThemeMode.DARK
                             coroutineScope.launch { ThemeSettings.saveTheme(context) }
                         }
-                        ThemeModeOption(
-                            stringResource(R.string.system_theme),
-                            stringResource(R.string.theme_system_desc),
-                            ThemeSettings.darkMode == ThemeMode.SYSTEM
-                        ) {
+                        ThemeModeOption(stringResource(R.string.system_theme), stringResource(R.string.theme_system_desc), ThemeSettings.darkMode == ThemeMode.SYSTEM) {
                             ThemeSettings.darkMode = ThemeMode.SYSTEM
                             coroutineScope.launch { ThemeSettings.saveTheme(context) }
                         }
                     }
                 }
 
-                /* -- „Nie wygaszaj ekranu” w karcie -- */
                 ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                     ListItem(
                         headlineContent = { Text(stringResource(R.string.keep_screen_on)) },
                         supportingContent = { Text(stringResource(R.string.keep_screen_on_desc)) },
                         trailingContent = {
-                            Switch(
-                                checked = keepScreenOn,
-                                onCheckedChange = {
-                                    keepScreenOn = it
-                                    ThemeSettings.keepScreenOn = it
-                                    coroutineScope.launch { ThemeSettings.saveTheme(context) }
-                                }
-                            )
+                            Switch(checked = keepScreenOn, onCheckedChange = {
+                                keepScreenOn = it
+                                ThemeSettings.keepScreenOn = it
+                                coroutineScope.launch { ThemeSettings.saveTheme(context) }
+                            })
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
 
-                /* ---------- Sekcja JĘZYK ---------- */
                 SettingsSectionHeader(title = stringResource(R.string.language))
 
                 ElevatedCard(modifier = Modifier.fillMaxWidth()) {
@@ -201,13 +166,12 @@ fun SettingsScreen(
                         }
                     }
                 }
-            } /* ← Column */
-
-        } /* ← key */
+            }
+        }
     }
 }
 
-    @Composable
+@Composable
 private fun SettingsSectionHeader(title: String) {
     Text(
         text = title,
