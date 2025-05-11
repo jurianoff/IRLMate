@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "StreamChat"
+rootProject.name = "IRLMate"
 include(":app")
