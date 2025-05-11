@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">IRLMate</string>
+    <string name="settings">设置</string>
+    <string name="theme">主题</string>
+    <string name="light_theme">浅色模式</string>
+    <string name="dark_theme">深色模式</string>
+    <string name="system_theme">系统默认</string>
+    <string name="keep_screen_on">保持屏幕常亮</string>
+    <string name="keep_screen_on_desc">防止在使用应用时屏幕关闭</string>
+    <string name="language">语言</string>
+
+    <!-- 语言名（本地写法） -->
+    <string name="language_polish">Polski</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_french">Français</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_ukrainian">Українська</string>
+    <string name="language_hindi">हिन्दी</string>
+
+    <string name="new_messages">新消息</string>
+    <string name="scroll_down">滚动到底部</string>
+    <string name="status_loading">加载中…</string>
+    <string name="status_online">🟢 在线</string>
+    <string name="status_offline">🔴 离线</string>
+    <string name="viewers">👥 %1$d</string>
+    <string name="back">返回</string>
+    <string name="theme_light_desc">使用浅色主题</string>
+    <string name="theme_dark_desc">使用深色主题</string>
+    <string name="theme_system_desc">跟随系统设置</string>
+    <string name="channel_settings">频道设置</string>
+    <string name="twitch_channel">Twitch 频道名</string>
+    <string name="kick_channel">Kick 频道名</string>
+    <string name="save">保存</string>
+
+    <string name="kick_login_title">Kick.com – 登录</string>
+    <string name="kick_login_prompt">请输入您在 Kick.com 上的登录名（slug）</string>
+    <string name="kick_login_label">用户名（例如 jurianoff）</string>
+    <string name="kick_login_error">登录名不能为空</string>
+    <string name="cont">继续</string>
+    <string name="login">登录</string>
+    <string name="logout">退出</string>
+    <string name="logged_in_as">已登录为 %1$s</string>
+    <string name="show_chat_status">显示聊天和直播状态</string>
+    <string name="enter_kick_login">请输入您的 Kick.com 登录名</string>
+    <string name="username_label">用户名（例如 jurianoff）</string>
+    <string name="kick_login_success">成功登录 Kick，用户：%1$s</string>
+    <string name="kick_auth_failed">登录 Kick 失败，请重试。</string>
+    <string name="kick_login_failed">无法登录 Kick</string>
+    <string name="kick_logout_success">已退出 Kick</string>
+    <string name="no_active_platforms">无活跃平台</string>
+    <string name="loading">加载中…</string>
+
+    <string name="twitch_login_title">登录 Twitch</string>
+    <string name="twitch_login_description">要连接 Twitch 聊天并查看直播状态，请登录您的 Twitch 帐户。</string>
+    <string name="twitch_login_button">使用 Twitch 登录</string>
+    <string name="twitch_logout_success">已退出 Twitch</string>
+
+    <string name="platforms">平台</string>
+    <string name="appearance">外观</string>
+    <string name="select_language">选择语言</string>
+    <string name="theme_mode_light">浅色</string>
+    <string name="theme_mode_dark">深色</string>
+    <string name="theme_mode_system">系统</string>
+
+
+</resources>

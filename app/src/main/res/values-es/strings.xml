@@ -1,0 +1,73 @@
+<resources>
+    <string name="app_name">IRLMate</string>
+    <string name="settings">Configuración</string>
+    <string name="theme">Tema</string>
+    <string name="light_theme">Modo claro</string>
+    <string name="dark_theme">Modo oscuro</string>
+    <string name="system_theme">Predeterminado del sistema</string>
+    <string name="keep_screen_on">Mantener la pantalla encendida</string>
+    <string name="keep_screen_on_desc">Evitar que la pantalla se apague mientras se usa la aplicación</string>
+    <string name="language">Idioma</string>
+
+    <!-- Języki w zapisie natywnym -->
+    <string name="language_polish">Polski</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_french">Français</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_ukrainian">Українська</string>
+    <string name="language_hindi">हिन्दी</string>
+
+
+    <string name="new_messages">Nuevos mensajes</string>
+    <string name="scroll_down">Desplazar hacia abajo</string>
+    <string name="status_loading">Cargando…</string>
+    <string name="status_online">🟢 En línea</string>
+    <string name="status_offline">🔴 Desconectado</string>
+    <string name="viewers">👥 %1$d</string>
+    <string name="back">Atrás</string>
+    <string name="theme_light_desc">Usar tema claro</string>
+    <string name="theme_dark_desc">Usar tema oscuro</string>
+    <string name="theme_system_desc">Coincidir con la configuración del sistema</string>
+    <string name="channel_settings">Configuración del canal</string>
+    <string name="twitch_channel">Nombre del canal de Twitch</string>
+    <string name="kick_channel">Nombre del canal de Kick</string>
+    <string name="save">Guardar</string>
+    <string name="select_language">Seleccionar idioma</string>
+
+
+    <string name="kick_login_title">Kick.com – Iniciar sesión</string>
+    <string name="kick_login_prompt">Introduce tu usuario (slug) de Kick.com</string>
+    <string name="kick_login_label">Usuario (p. ej. jurianoff)</string>
+    <string name="kick_login_error">El nombre de usuario no puede estar vacío</string>
+    <string name="cont">Continuar</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="logged_in_as">Conectado como %1$s</string>
+    <string name="show_chat_status">Mostrar chat y estado del stream</string>
+    <string name="enter_kick_login">Introduce tu usuario de Kick.com</string>
+    <string name="username_label">Usuario (p. ej. jurianoff)</string>
+    <string name="kick_login_success">Sesión iniciada en Kick como %1$s</string>
+    <string name="kick_auth_failed">No se pudo iniciar sesión en Kick. Inténtalo de nuevo.</string>
+    <string name="kick_login_failed">Error al iniciar sesión en Kick</string>
+    <string name="kick_logout_success">Cierre de sesión en Kick exitoso</string>
+    <string name="no_active_platforms">No hay plataformas activas</string>
+    <string name="loading">Cargando…</string>
+
+    <string name="twitch_login_title">Iniciar sesión en Twitch</string>
+    <string name="twitch_login_description">Para conectar el chat de Twitch y ver el estado del stream, inicia sesión en tu cuenta de Twitch.</string>
+    <string name="twitch_login_button">Iniciar sesión con Twitch</string>
+    <string name="twitch_logout_success">Cierre de sesión en Twitch exitoso</string>
+
+    <string name="platforms">Plataformas</string>
+    <string name="appearance">Apariencia</string>
+    <string name="theme_mode_light">Claro</string>
+    <string name="theme_mode_dark">Oscuro</string>
+    <string name="theme_mode_system">Sistema</string>
+
+</resources>

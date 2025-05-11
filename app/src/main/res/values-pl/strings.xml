@@ -8,8 +8,22 @@
     <string name="keep_screen_on">Nie wygaszaj ekranu</string>
     <string name="keep_screen_on_desc">Zabezpiecza ekran przed wyłączaniem podczas działania aplikacji</string>
     <string name="language">Język</string>
+
+    <!-- Nazwy języków w językach natywnych -->
     <string name="language_polish">Polski</string>
-    <string name="language_english">Angielski</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_french">Français</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_ukrainian">Українська</string>
+    <string name="language_hindi">हिन्दी</string>
+
+
     <string name="new_messages">Nowe wiadomości</string>
     <string name="scroll_down">Przewiń na dół</string>
     <string name="status_loading">Ładowanie…</string>
@@ -24,7 +38,8 @@
     <string name="twitch_channel">Nazwa kanału Twitch</string>
     <string name="kick_channel">Nazwa kanału Kick</string>
     <string name="save">Zapisz</string>
-    <string name="kick_login_title">Kick.com – Logowanie</string>
+
+    <string name="kick_login_title">Kick.com – Zaloguj się</string>
     <string name="kick_login_prompt">Wpisz swój login (slug) na Kick.com</string>
     <string name="kick_login_label">Login (np. jurianoff)</string>
     <string name="kick_login_error">Login nie może być pusty</string>
@@ -41,11 +56,18 @@
     <string name="kick_logout_success">Wylogowano z Kick</string>
     <string name="no_active_platforms">Brak aktywnych platform</string>
     <string name="loading">Ładowanie...</string>
+
     <string name="twitch_login_title">Zaloguj się do Twitch</string>
     <string name="twitch_login_description">Aby połączyć się z czatem Twitch i sprawdzać status transmisji, zaloguj się do swojego konta Twitch.</string>
     <string name="twitch_login_button">Zaloguj przez Twitch</string>
     <string name="twitch_logout_success">Wylogowano z Twitch</string>
+
     <string name="platforms">Platformy</string>
     <string name="appearance">Wygląd</string>
+    <string name="select_language">Wybierz język</string>
+    <string name="theme_mode_light">Jasny</string>
+    <string name="theme_mode_dark">Ciemny</string>
+    <string name="theme_mode_system">System</string>
+
 
 </resources>

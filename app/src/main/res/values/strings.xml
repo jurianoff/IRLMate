@@ -8,8 +8,22 @@
     <string name="keep_screen_on">Keep screen on</string>
     <string name="keep_screen_on_desc">Prevent screen from turning off while using the app</string>
     <string name="language">Language</string>
-    <string name="language_polish">Polish</string>
+
+    <!-- Language names in native form -->
+    <string name="language_polish">Polski</string>
     <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_french">Français</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_ukrainian">Українська</string>
+    <string name="language_hindi">हिन्दी</string>
+
+
     <string name="new_messages">New messages</string>
     <string name="scroll_down">Scroll to bottom</string>
     <string name="status_loading">Loading…</string>
@@ -24,6 +38,7 @@
     <string name="twitch_channel">Twitch channel name</string>
     <string name="kick_channel">Kick channel name</string>
     <string name="save">Save</string>
+
     <string name="kick_login_title">Kick.com – Login</string>
     <string name="kick_login_prompt">Enter your login (slug) on Kick.com</string>
     <string name="kick_login_label">Login (e.g. jurianoff)</string>
@@ -35,18 +50,23 @@
     <string name="show_chat_status">Show chat and stream status</string>
     <string name="enter_kick_login">Enter your Kick.com login</string>
     <string name="username_label">Username (e.g. jurianoff)</string>
-    <string name="kick_login_success">Zalogowano do Kick jako %1$s</string>
-    <string name="kick_auth_failed">Logowanie do Kick nie powiodło się. Spróbuj ponownie.</string>
+    <string name="kick_login_success">Logged in to Kick as %1$s</string>
+    <string name="kick_auth_failed">Failed to log in to Kick. Please try again.</string>
     <string name="kick_login_failed">Failed to log in to Kick</string>
     <string name="kick_logout_success">Logged out from Kick</string>
     <string name="no_active_platforms">No active platforms</string>
     <string name="loading">Loading...</string>
+
     <string name="twitch_login_title">Log in to Twitch</string>
     <string name="twitch_login_description">To connect Twitch chat and check stream status, log in to your Twitch account.</string>
     <string name="twitch_login_button">Log in with Twitch</string>
     <string name="twitch_logout_success">Logged out from Twitch</string>
-    <string name="platforms">Platforms</string>
-    <string name="appearance">Apperance</string>
 
+    <string name="platforms">Platforms</string>
+    <string name="appearance">Appearance</string>
+    <string name="select_language">Select language</string>
+    <string name="theme_mode_light">Light</string>
+    <string name="theme_mode_dark">Dark</string>
+    <string name="theme_mode_system">System</string>
 
 </resources>

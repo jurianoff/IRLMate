@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">IRLMate</string>
+    <string name="settings">Einstellungen</string>
+    <string name="theme">Design</string>
+    <string name="light_theme">Heller Modus</string>
+    <string name="dark_theme">Dunkler Modus</string>
+    <string name="system_theme">Systemstandard</string>
+    <string name="keep_screen_on">Bildschirm eingeschaltet lassen</string>
+    <string name="keep_screen_on_desc">Verhindert das Ausschalten des Bildschirms während der Nutzung der App</string>
+    <string name="language">Sprache</string>
+
+    <!-- Sprachnamen im nativen Format -->
+    <string name="language_polish">Polski</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_french">Français</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_ukrainian">Українська</string>
+    <string name="language_hindi">हिन्दी</string>
+
+    <string name="new_messages">Neue Nachrichten</string>
+    <string name="scroll_down">Nach unten scrollen</string>
+    <string name="status_loading">Lädt…</string>
+    <string name="status_online">🟢 Online</string>
+    <string name="status_offline">🔴 Offline</string>
+    <string name="viewers">👥 %1$d</string>
+    <string name="back">Zurück</string>
+    <string name="theme_light_desc">Helles Design verwenden</string>
+    <string name="theme_dark_desc">Dunkles Design verwenden</string>
+    <string name="theme_system_desc">Systemeinstellungen übernehmen</string>
+    <string name="channel_settings">Kanaleinstellungen</string>
+    <string name="twitch_channel">Twitch-Kanalname</string>
+    <string name="kick_channel">Kick-Kanalname</string>
+    <string name="save">Speichern</string>
+
+    <string name="kick_login_title">Kick.com – Anmeldung</string>
+    <string name="kick_login_prompt">Gib deinen Login (Slug) auf Kick.com ein</string>
+    <string name="kick_login_label">Login (z. B. jurianoff)</string>
+    <string name="kick_login_error">Login darf nicht leer sein</string>
+    <string name="cont">Weiter</string>
+    <string name="login">Anmelden</string>
+    <string name="logout">Abmelden</string>
+    <string name="logged_in_as">Angemeldet als %1$s</string>
+    <string name="show_chat_status">Chat und Streamstatus anzeigen</string>
+    <string name="enter_kick_login">Gib deinen Kick.com-Login ein</string>
+    <string name="username_label">Benutzername (z. B. jurianoff)</string>
+    <string name="kick_login_success">Bei Kick angemeldet als %1$s</string>
+    <string name="kick_auth_failed">Anmeldung bei Kick fehlgeschlagen. Bitte versuche es erneut.</string>
+    <string name="kick_login_failed">Anmeldung bei Kick fehlgeschlagen</string>
+    <string name="kick_logout_success">Abmeldung bei Kick erfolgreich</string>
+    <string name="no_active_platforms">Keine aktiven Plattformen</string>
+    <string name="loading">Lädt…</string>
+
+    <string name="twitch_login_title">Bei Twitch anmelden</string>
+    <string name="twitch_login_description">Melde dich bei deinem Twitch-Konto an, um den Chat zu verbinden und den Streamstatus anzuzeigen.</string>
+    <string name="twitch_login_button">Mit Twitch anmelden</string>
+    <string name="twitch_logout_success">Abmeldung bei Twitch erfolgreich</string>
+
+    <string name="platforms">Plattformen</string>
+    <string name="appearance">Erscheinungsbild</string>
+    <string name="select_language">Sprache auswählen</string>
+    <string name="theme_mode_light">Hell</string>
+    <string name="theme_mode_dark">Dunkel</string>
+    <string name="theme_mode_system">System</string>
+
+</resources>

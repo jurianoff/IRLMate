@@ -9,8 +9,9 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.lifecycleScope
 import com.jurianoff.irlmate.navigation.IRLMateApp
 import com.jurianoff.irlmate.ui.settings.KickSession
-import com.jurianoff.irlmate.ui.settings.TwitchSession
 import com.jurianoff.irlmate.ui.settings.ThemeSettings
+import com.jurianoff.irlmate.ui.settings.TwitchSession
+import com.jurianoff.irlmate.ui.theme.ThemeController
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -18,6 +19,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 0. Wymuś tryb systemowy zgodnie z zapisanym motywem
+        ThemeController.applyUserTheme(ThemeSettings.darkMode)
 
         // 1. Załaduj sesje
         lifecycleScope.launch {

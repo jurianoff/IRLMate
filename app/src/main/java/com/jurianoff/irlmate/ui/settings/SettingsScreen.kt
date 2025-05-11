@@ -11,14 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import com.jurianoff.irlmate.R
+import com.jurianoff.irlmate.ui.settings.components.LanguageSelector
+import com.jurianoff.irlmate.ui.theme.ThemeController
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,7 +30,6 @@ fun SettingsScreen(
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
 
-    var selectedLanguage by remember { mutableStateOf(ThemeSettings.languageCode) }
     var keepScreenOn by remember { mutableStateOf(ThemeSettings.keepScreenOn) }
 
     var isTwitchLoggedIn by remember { mutableStateOf(TwitchSession.isLoggedIn()) }
@@ -43,8 +40,6 @@ fun SettingsScreen(
     var kickUsername by remember { mutableStateOf(KickSession.username ?: "") }
     var showKick by remember { mutableStateOf(KickSession.showChatAndStatus) }
 
-    val darkModeKey = ThemeSettings.darkMode // ensures recomposition when theme changes
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -54,119 +49,116 @@ fun SettingsScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-                )
+                colors = TopAppBarDefaults.topAppBarColors()
             )
         }
     ) { padding ->
-        key(ThemeSettings.darkMode) {
-            Column(
-                modifier = Modifier
-                    .padding(padding)
-                    .padding(horizontal = 16.dp)
-                    .verticalScroll(scrollState)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                SettingsSectionHeader(title = stringResource(R.string.platforms))
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .padding(horizontal = 16.dp)
+                .verticalScroll(scrollState)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            SettingsSectionHeader(title = stringResource(R.string.platforms))
 
-                PlatformCard(
-                    iconRes = R.drawable.ic_kick_logo,
-                    label = "Kick.com",
-                    isLoggedIn = isKickLoggedIn,
-                    username = kickUsername,
-                    showToggle = showKick,
-                    onLogin = onNavigateToKickLogin,
-                    onLogout = {
-                        coroutineScope.launch {
-                            KickSession.clearSession(context)
-                            showKick = false
-                            isKickLoggedIn = false
-                            kickUsername = ""
-                            Toast.makeText(context, context.getString(R.string.kick_logout_success), Toast.LENGTH_SHORT).show()
-                        }
-                    },
-                    onToggle = {
-                        showKick = it
-                        coroutineScope.launch { KickSession.setShowChatAndStatus(context, it) }
+            PlatformCard(
+                iconRes = R.drawable.ic_kick_logo,
+                label = "Kick.com",
+                isLoggedIn = isKickLoggedIn,
+                username = kickUsername,
+                showToggle = showKick,
+                onLogin = onNavigateToKickLogin,
+                onLogout = {
+                    coroutineScope.launch {
+                        KickSession.clearSession(context)
+                        showKick = false
+                        isKickLoggedIn = false
+                        kickUsername = ""
+                        Toast.makeText(context, context.getString(R.string.kick_logout_success), Toast.LENGTH_SHORT).show()
                     }
-                )
-
-                PlatformCard(
-                    iconRes = R.drawable.ic_twitch_logo,
-                    label = "Twitch",
-                    isLoggedIn = isTwitchLoggedIn,
-                    username = twitchUsername,
-                    showToggle = showTwitch,
-                    onLogin = onNavigateToTwitchLogin,
-                    onLogout = {
-                        coroutineScope.launch {
-                            TwitchSession.clearSession(context)
-                            showTwitch = false
-                            isTwitchLoggedIn = false
-                            twitchUsername = ""
-                            Toast.makeText(context, context.getString(R.string.twitch_logout_success), Toast.LENGTH_SHORT).show()
-                        }
-                    },
-                    onToggle = {
-                        showTwitch = it
-                        coroutineScope.launch { TwitchSession.setShowChatAndStatus(context, it) }
-                    }
-                )
-
-                SettingsSectionHeader(title = stringResource(R.string.appearance))
-
-                ElevatedCard(modifier = Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(12.dp)) {
-                        ThemeModeOption(stringResource(R.string.light_theme), stringResource(R.string.theme_light_desc), ThemeSettings.darkMode == ThemeMode.LIGHT) {
-                            ThemeSettings.darkMode = ThemeMode.LIGHT
-                            coroutineScope.launch { ThemeSettings.saveTheme(context) }
-                        }
-                        ThemeModeOption(stringResource(R.string.dark_theme), stringResource(R.string.theme_dark_desc), ThemeSettings.darkMode == ThemeMode.DARK) {
-                            ThemeSettings.darkMode = ThemeMode.DARK
-                            coroutineScope.launch { ThemeSettings.saveTheme(context) }
-                        }
-                        ThemeModeOption(stringResource(R.string.system_theme), stringResource(R.string.theme_system_desc), ThemeSettings.darkMode == ThemeMode.SYSTEM) {
-                            ThemeSettings.darkMode = ThemeMode.SYSTEM
-                            coroutineScope.launch { ThemeSettings.saveTheme(context) }
-                        }
-                    }
+                },
+                onToggle = {
+                    showKick = it
+                    coroutineScope.launch { KickSession.setShowChatAndStatus(context, it) }
                 }
+            )
 
-                ElevatedCard(modifier = Modifier.fillMaxWidth()) {
-                    ListItem(
-                        headlineContent = { Text(stringResource(R.string.keep_screen_on)) },
-                        supportingContent = { Text(stringResource(R.string.keep_screen_on_desc)) },
-                        trailingContent = {
-                            Switch(checked = keepScreenOn, onCheckedChange = {
-                                keepScreenOn = it
-                                ThemeSettings.keepScreenOn = it
-                                coroutineScope.launch { ThemeSettings.saveTheme(context) }
-                            })
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+            PlatformCard(
+                iconRes = R.drawable.ic_twitch_logo,
+                label = "Twitch",
+                isLoggedIn = isTwitchLoggedIn,
+                username = twitchUsername,
+                showToggle = showTwitch,
+                onLogin = onNavigateToTwitchLogin,
+                onLogout = {
+                    coroutineScope.launch {
+                        TwitchSession.clearSession(context)
+                        showTwitch = false
+                        isTwitchLoggedIn = false
+                        twitchUsername = ""
+                        Toast.makeText(context, context.getString(R.string.twitch_logout_success), Toast.LENGTH_SHORT).show()
+                    }
+                },
+                onToggle = {
+                    showTwitch = it
+                    coroutineScope.launch { TwitchSession.setShowChatAndStatus(context, it) }
                 }
+            )
 
-                SettingsSectionHeader(title = stringResource(R.string.language))
+            SettingsSectionHeader(title = stringResource(R.string.appearance))
 
-                ElevatedCard(modifier = Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(12.dp)) {
-                        LanguageOption("Polski", selectedLanguage == "pl") {
-                            selectedLanguage = "pl"
-                            ThemeSettings.languageCode = "pl"
-                            coroutineScope.launch { ThemeSettings.saveLanguage(context) }
-                        }
-                        LanguageOption("English", selectedLanguage == "en") {
-                            selectedLanguage = "en"
-                            ThemeSettings.languageCode = "en"
-                            coroutineScope.launch { ThemeSettings.saveLanguage(context) }
-                        }
+            ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                Column(Modifier.padding(12.dp)) {
+                    ThemeModeOption(
+                        title = stringResource(R.string.theme_mode_light),
+                        description = stringResource(R.string.theme_light_desc),
+                        selected = ThemeSettings.darkMode == ThemeMode.LIGHT
+                    ) {
+                        ThemeSettings.darkMode = ThemeMode.LIGHT
+                        ThemeController.applyUserTheme(ThemeSettings.darkMode)
+                        coroutineScope.launch { ThemeSettings.saveTheme(context) }
+                    }
+
+                    ThemeModeOption(
+                        title = stringResource(R.string.theme_mode_dark),
+                        description = stringResource(R.string.theme_dark_desc),
+                        selected = ThemeSettings.darkMode == ThemeMode.DARK
+                    ) {
+                        ThemeSettings.darkMode = ThemeMode.DARK
+                        ThemeController.applyUserTheme(ThemeSettings.darkMode)
+                        coroutineScope.launch { ThemeSettings.saveTheme(context) }
+                    }
+
+                    ThemeModeOption(
+                        title = stringResource(R.string.theme_mode_system),
+                        description = stringResource(R.string.theme_system_desc),
+                        selected = ThemeSettings.darkMode == ThemeMode.SYSTEM
+                    ) {
+                        ThemeSettings.darkMode = ThemeMode.SYSTEM
+                        ThemeController.applyUserTheme(ThemeSettings.darkMode)
+                        coroutineScope.launch { ThemeSettings.saveTheme(context) }
                     }
                 }
             }
+
+            ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                ListItem(
+                    headlineContent = { Text(stringResource(R.string.keep_screen_on)) },
+                    supportingContent = { Text(stringResource(R.string.keep_screen_on_desc)) },
+                    trailingContent = {
+                        Switch(checked = keepScreenOn, onCheckedChange = {
+                            keepScreenOn = it
+                            ThemeSettings.keepScreenOn = it
+                            coroutineScope.launch { ThemeSettings.saveTheme(context) }
+                        })
+                    }
+                )
+            }
+
+            SettingsSectionHeader(title = stringResource(R.string.language))
+            LanguageSelector() // zaktualizowany komponent
         }
     }
 }
@@ -244,15 +236,6 @@ private fun ThemeModeOption(title: String, description: String, selected: Boolea
     ListItem(
         headlineContent = { Text(title) },
         supportingContent = { Text(description) },
-        trailingContent = { RadioButton(selected = selected, onClick = onClick) },
-        modifier = Modifier.fillMaxWidth()
-    )
-}
-
-@Composable
-private fun LanguageOption(title: String, selected: Boolean, onClick: () -> Unit) {
-    ListItem(
-        headlineContent = { Text(title) },
         trailingContent = { RadioButton(selected = selected, onClick = onClick) },
         modifier = Modifier.fillMaxWidth()
     )

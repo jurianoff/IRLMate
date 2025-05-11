@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">IRLMate</string>
+    <string name="settings">Налаштування</string>
+    <string name="theme">Тема</string>
+    <string name="light_theme">Світла тема</string>
+    <string name="dark_theme">Темна тема</string>
+    <string name="system_theme">Системна за замовчуванням</string>
+    <string name="keep_screen_on">Не вимикати екран</string>
+    <string name="keep_screen_on_desc">Захищає екран від вимкнення під час використання програми</string>
+    <string name="language">Мова</string>
+
+    <!-- Назви мов у рідному записі -->
+    <string name="language_polish">Polski</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_french">Français</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_ukrainian">Українська</string>
+    <string name="language_hindi">हिन्दी</string>
+
+    <string name="new_messages">Нові повідомлення</string>
+    <string name="scroll_down">Прокрутити вниз</string>
+    <string name="status_loading">Завантаження…</string>
+    <string name="status_online">🟢 Онлайн</string>
+    <string name="status_offline">🔴 Офлайн</string>
+    <string name="viewers">👥 %1$d</string>
+    <string name="back">Назад</string>
+    <string name="theme_light_desc">Використовувати світлу тему</string>
+    <string name="theme_dark_desc">Використовувати темну тему</string>
+    <string name="theme_system_desc">Дотримуватися налаштувань системи</string>
+    <string name="channel_settings">Налаштування каналів</string>
+    <string name="twitch_channel">Назва каналу Twitch</string>
+    <string name="kick_channel">Назва каналу Kick</string>
+    <string name="save">Зберегти</string>
+
+    <string name="kick_login_title">Kick.com – Вхід</string>
+    <string name="kick_login_prompt">Введіть свій логін (slug) на Kick.com</string>
+    <string name="kick_login_label">Логін (наприклад, jurianoff)</string>
+    <string name="kick_login_error">Логін не може бути порожнім</string>
+    <string name="cont">Продовжити</string>
+    <string name="login">Увійти</string>
+    <string name="logout">Вийти</string>
+    <string name="logged_in_as">Увійшли як %1$s</string>
+    <string name="show_chat_status">Показати чат і статус трансляції</string>
+    <string name="enter_kick_login">Введіть логін Kick.com</string>
+    <string name="username_label">Ім’я користувача (наприклад, jurianoff)</string>
+    <string name="kick_login_success">Успішний вхід у Kick як %1$s</string>
+    <string name="kick_auth_failed">Не вдалося увійти в Kick. Спробуйте ще раз.</string>
+    <string name="kick_login_failed">Помилка входу в Kick</string>
+    <string name="kick_logout_success">Вихід з Kick успішний</string>
+    <string name="no_active_platforms">Немає активних платформ</string>
+    <string name="loading">Завантаження…</string>
+
+    <string name="twitch_login_title">Увійти в Twitch</string>
+    <string name="twitch_login_description">Щоб підключити чат Twitch і перевірити статус трансляції, увійдіть у свій обліковий запис Twitch.</string>
+    <string name="twitch_login_button">Увійти через Twitch</string>
+    <string name="twitch_logout_success">Вихід з Twitch успішний</string>
+
+    <string name="platforms">Платформи</string>
+    <string name="appearance">Зовнішній вигляд</string>
+    <string name="select_language">Виберіть мову</string>
+    <string name="theme_mode_light">Світла</string>
+    <string name="theme_mode_dark">Темна</string>
+    <string name="theme_mode_system">Системна</string>
+
+
+</resources>

@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">IRLMate</string>
+    <string name="settings">Ayarlar</string>
+    <string name="theme">Tema</string>
+    <string name="light_theme">Açık Mod</string>
+    <string name="dark_theme">Koyu Mod</string>
+    <string name="system_theme">Sistem Varsayılanı</string>
+    <string name="keep_screen_on">Ekranı açık tut</string>
+    <string name="keep_screen_on_desc">Uygulama kullanılırken ekranın kapanmasını engeller</string>
+    <string name="language">Dil</string>
+
+    <!-- Dillerin ana dillerinde adları -->
+    <string name="language_polish">Polski</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_french">Français</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_ukrainian">Українська</string>
+    <string name="language_hindi">हिन्दी</string>
+
+    <string name="new_messages">Yeni mesajlar</string>
+    <string name="scroll_down">Aşağı kaydır</string>
+    <string name="status_loading">Yükleniyor…</string>
+    <string name="status_online">🟢 Canlı</string>
+    <string name="status_offline">🔴 Çevrimdışı</string>
+    <string name="viewers">👥 %1$d</string>
+    <string name="back">Geri</string>
+    <string name="theme_light_desc">Açık temayı kullan</string>
+    <string name="theme_dark_desc">Koyu temayı kullan</string>
+    <string name="theme_system_desc">Sistem ayarlarını takip et</string>
+    <string name="channel_settings">Kanal ayarları</string>
+    <string name="twitch_channel">Twitch kanal adı</string>
+    <string name="kick_channel">Kick kanal adı</string>
+    <string name="save">Kaydet</string>
+
+    <string name="kick_login_title">Kick.com – Giriş yap</string>
+    <string name="kick_login_prompt">Kick.com’daki kullanıcı adınızı (slug) girin</string>
+    <string name="kick_login_label">Kullanıcı (ör. jurianoff)</string>
+    <string name="kick_login_error">Kullanıcı adı boş olamaz</string>
+    <string name="cont">Devam et</string>
+    <string name="login">Giriş yap</string>
+    <string name="logout">Çıkış yap</string>
+    <string name="logged_in_as">%1$s olarak giriş yapıldı</string>
+    <string name="show_chat_status">Sohbeti ve yayın durumunu göster</string>
+    <string name="enter_kick_login">Kick.com kullanıcı adınızı girin</string>
+    <string name="username_label">Kullanıcı adı (ör. jurianoff)</string>
+    <string name="kick_login_success">Kick’e %1$s olarak giriş yapıldı</string>
+    <string name="kick_auth_failed">Kick giriş başarısız. Lütfen tekrar deneyin.</string>
+    <string name="kick_login_failed">Kick\\\'e giriş başarısız</string>
+    <string name="kick_logout_success">Kick’ten çıkış yapıldı</string>
+    <string name="no_active_platforms">Etkin platform yok</string>
+    <string name="loading">Yükleniyor…</string>
+
+    <string name="twitch_login_title">Twitch’e giriş yap</string>
+    <string name="twitch_login_description">Twitch sohbetini bağlamak ve yayın durumunu kontrol etmek için Twitch hesabınıza giriş yapın.</string>
+    <string name="twitch_login_button">Twitch ile giriş yap</string>
+    <string name="twitch_logout_success">Twitch’ten çıkış yapıldı</string>
+
+    <string name="platforms">Platformlar</string>
+    <string name="appearance">Görünüm</string>
+    <string name="select_language">Dil seçin</string>
+    <string name="theme_mode_light">Açık</string>
+    <string name="theme_mode_dark">Koyu</string>
+    <string name="theme_mode_system">Sistem</string>
+
+</resources>

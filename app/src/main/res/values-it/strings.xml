@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IRLMate</string>
+    <string name="settings">Impostazioni</string>
+    <string name="theme">Tema</string>
+    <string name="light_theme">Modalità chiara</string>
+    <string name="dark_theme">Modalità scura</string>
+    <string name="system_theme">Predefinito di sistema</string>
+    <string name="keep_screen_on">Mantieni lo schermo acceso</string>
+    <string name="keep_screen_on_desc">Impedisce allo schermo di spegnersi durante l\'utilizzo dell\'app</string>
+    <string name="language">Lingua</string>
+
+    <!-- Nomi delle lingue in forma nativa -->
+    <string name="language_polish">Polski</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_french">Français</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_ukrainian">Українська</string>
+    <string name="language_hindi">हिन्दी</string>
+
+    <string name="new_messages">Nuovi messaggi</string>
+    <string name="scroll_down">Scorri in basso</string>
+    <string name="status_loading">Caricamento...</string>
+    <string name="status_online">🟢 In diretta</string>
+    <string name="status_offline">🔴 Offline</string>
+    <string name="viewers">👥 %1$d</string>
+    <string name="back">Indietro</string>
+    <string name="theme_light_desc">Usa il tema chiaro</string>
+    <string name="theme_dark_desc">Usa il tema scuro</string>
+    <string name="theme_system_desc">Segui le impostazioni di sistema</string>
+    <string name="channel_settings">Impostazioni canale</string>
+    <string name="twitch_channel">Nome canale Twitch</string>
+    <string name="kick_channel">Nome canale Kick</string>
+    <string name="save">Salva</string>
+
+    <string name="kick_login_title">Kick.com – Accedi</string>
+    <string name="kick_login_prompt">Inserisci il tuo nome utente (slug) su Kick.com</string>
+    <string name="kick_login_label">Utente (es. jurianoff)</string>
+    <string name="kick_login_error">Il campo utente non può essere vuoto</string>
+    <string name="cont">Continua</string>
+    <string name="login">Accedi</string>
+    <string name="logout">Disconnetti</string>
+    <string name="logged_in_as">Connesso come %1$s</string>
+    <string name="show_chat_status">Mostra chat e stato dello stream</string>
+    <string name="enter_kick_login">Inserisci il tuo nome utente Kick.com</string>
+    <string name="username_label">Nome utente (es. jurianoff)</string>
+    <string name="kick_login_success">Accesso a Kick come %1$s</string>
+    <string name="kick_auth_failed">Accesso a Kick non riuscito. Riprova.</string>
+    <string name="kick_login_failed">Accesso a Kick non riuscito</string>
+    <string name="kick_logout_success">Disconnessione da Kick completata</string>
+    <string name="no_active_platforms">Nessuna piattaforma attiva</string>
+    <string name="loading">Caricamento...</string>
+
+    <string name="twitch_login_title">Accedi a Twitch</string>
+    <string name="twitch_login_description">Per connettere la chat Twitch e controllare lo stato dello stream, accedi al tuo account Twitch.</string>
+    <string name="twitch_login_button">Accedi con Twitch</string>
+    <string name="twitch_logout_success">Disconnessione da Twitch completata</string>
+
+    <string name="platforms">Piattaforme</string>
+    <string name="appearance">Aspetto</string>
+    <string name="select_language">Seleziona la lingua</string>
+    <string name="theme_mode_light">Chiaro</string>
+    <string name="theme_mode_dark">Scuro</string>
+    <string name="theme_mode_system">Sistema</string>
+
+</resources>

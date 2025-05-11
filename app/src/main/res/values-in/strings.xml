@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">IRLMate</string>
+    <string name="settings">सेटिंग्स</string>
+    <string name="theme">थीम</string>
+    <string name="light_theme">हल्का मोड</string>
+    <string name="dark_theme">गहरा मोड</string>
+    <string name="system_theme">सिस्टम डिफ़ॉल्ट</string>
+    <string name="keep_screen_on">स्क्रीन को चालू रखें</string>
+    <string name="keep_screen_on_desc">ऐप का उपयोग करते समय स्क्रीन को बंद होने से रोकता है</string>
+    <string name="language">भाषा</string>
+
+    <!-- सभी भाषाओं के नाम -->
+    <string name="language_polish">Polski</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_french">Français</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_ukrainian">Українська</string>
+    <string name="language_hindi">हिन्दी</string>
+
+    <string name="new_messages">नए संदेश</string>
+    <string name="scroll_down">नीचे स्क्रॉल करें</string>
+    <string name="status_loading">लोड हो रहा है…</string>
+    <string name="status_online">🟢 ऑनलाइन</string>
+    <string name="status_offline">🔴 ऑफलाइन</string>
+    <string name="viewers">👥 %1$d</string>
+    <string name="back">वापस</string>
+    <string name="theme_light_desc">हल्की थीम का उपयोग करें</string>
+    <string name="theme_dark_desc">गहरी थीम का उपयोग करें</string>
+    <string name="theme_system_desc">सिस्टम सेटिंग्स के अनुसार</string>
+    <string name="channel_settings">चैनल सेटिंग्स</string>
+    <string name="twitch_channel">Twitch चैनल नाम</string>
+    <string name="kick_channel">Kick चैनल नाम</string>
+    <string name="save">सेव करें</string>
+
+    <string name="kick_login_title">Kick.com – लॉगिन करें</string>
+    <string name="kick_login_prompt">Kick.com पर अपना लॉगिन (slug) दर्ज करें</string>
+    <string name="kick_login_label">उपयोगकर्ता नाम (जैसे jurianoff)</string>
+    <string name="kick_login_error">लॉगिन खाली नहीं हो सकता</string>
+    <string name="cont">जारी रखें</string>
+    <string name="login">लॉगिन करें</string>
+    <string name="logout">लॉगआउट करें</string>
+    <string name="logged_in_as">%1$s के रूप में लॉगिन किया गया</string>
+    <string name="show_chat_status">चैट और स्ट्रीम स्थिति दिखाएं</string>
+    <string name="enter_kick_login">अपना Kick.com लॉगिन दर्ज करें</string>
+    <string name="username_label">यूज़रनेम (जैसे jurianoff)</string>
+    <string name="kick_login_success">Kick में %1$s के रूप में लॉगिन किया गया</string>
+    <string name="kick_auth_failed">Kick लॉगिन विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="kick_login_failed">Kick लॉगिन असफल रहा</string>
+    <string name="kick_logout_success">Kick से लॉगआउट किया गया</string>
+    <string name="no_active_platforms">कोई सक्रिय प्लेटफ़ॉर्म नहीं</string>
+    <string name="loading">लोड हो रहा है…</string>
+
+    <string name="twitch_login_title">Twitch में लॉगिन करें</string>
+    <string name="twitch_login_description">Twitch चैट कनेक्ट करने और स्ट्रीम स्थिति देखने के लिए अपने Twitch खाते में लॉगिन करें।</string>
+    <string name="twitch_login_button">Twitch से लॉगिन करें</string>
+    <string name="twitch_logout_success">Twitch से लॉगआउट किया गया</string>
+
+    <string name="platforms">प्लेटफ़ॉर्म</string>
+    <string name="appearance">रूप</string>
+    <string name="select_language">भाषा चुनें</string>
+    <string name="theme_mode_light">हल्का</string>
+    <string name="theme_mode_dark">गहरा</string>
+    <string name="theme_mode_system">सिस्टम</string>
+
+
+</resources>
