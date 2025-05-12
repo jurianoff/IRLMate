@@ -24,6 +24,11 @@ class KickChatViewModel : ViewModel() {
     private var chatJob: Job? = null
     private var statusJob: Job? = null
 
+    private fun formatTimestamp(epochMillis: Long): String {
+        val formatter = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+        return formatter.format(java.util.Date(epochMillis))
+    }
+
     init {
         updateConnectionState()
     }
@@ -43,9 +48,11 @@ class KickChatViewModel : ViewModel() {
         println("✅ [KickChatVM] Łączenie z czatem Kick")
         chatJob = viewModelScope.launch(Dispatchers.IO) {
             platform.connectChat { msg ->
-                println("💬 [KickChatVM] ${msg.user}: ${msg.message}")
-                _messages.update { current -> (current + msg).takeLast(100) }
+                val formatted = msg.copy(timestamp = formatTimestamp(msg.createdAt))
+                println("💬 [KickChatVM] ${formatted.user}: ${formatted.message} @ ${formatted.timestamp}")
+                _messages.update { current -> (current + formatted).takeLast(100) }
             }
+
         }
     }
 

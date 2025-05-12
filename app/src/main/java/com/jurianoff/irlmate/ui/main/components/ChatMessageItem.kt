@@ -26,10 +26,8 @@ fun ChatMessageItem(
     message: ChatMessage,
     modifier: Modifier = Modifier
 ) {
-    /* 1️⃣  flaga per-wiadomość */
     var appeared by remember(message.id) { mutableStateOf(false) }
 
-    /* 2️⃣  animowane właściwości – TYLKO alfa i offset */
     val alphaAnim by animateFloatAsState(
         targetValue = if (appeared) 1f else 0f,
         animationSpec = tween(300, easing = LinearOutSlowInEasing)
@@ -39,7 +37,6 @@ fun ChatMessageItem(
         animationSpec = tween(300, easing = LinearOutSlowInEasing)
     )
 
-    /* 3️⃣  uruchom animację po pierwszym composition */
     LaunchedEffect(Unit) { appeared = true }
 
     MessageRow(
@@ -88,11 +85,20 @@ private fun MessageRow(message: ChatMessage, modifier: Modifier) {
                 .padding(12.dp)
                 .weight(1f)
         ) {
-            Text(
-                text = message.user,
-                style = MaterialTheme.typography.titleSmall,
-                color = textColor
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = message.user,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = textColor
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = message.timestamp,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = textColor.copy(alpha = 0.7f)
+                )
+            }
+
             Spacer(Modifier.height(2.dp))
             Text(
                 text = message.message,
