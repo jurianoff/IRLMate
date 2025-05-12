@@ -26,17 +26,17 @@ fun LanguageSelector(
 
     val rawLanguages = listOf(
         "br" to R.string.language_portuguese,
-        "cn" to R.string.language_chinese,
         "de" to R.string.language_german,
         "en" to R.string.language_english,
         "es" to R.string.language_spanish,
         "fr" to R.string.language_french,
-        "in" to R.string.language_hindi,
+        "hi" to R.string.language_hindi,
         "it" to R.string.language_italian,
         "pl" to R.string.language_polish,
         "ru" to R.string.language_russian,
         "tr" to R.string.language_turkish,
-        "ua" to R.string.language_ukrainian
+        "uk" to R.string.language_ukrainian,
+        "zh" to R.string.language_chinese
     )
 
     ElevatedCard(
