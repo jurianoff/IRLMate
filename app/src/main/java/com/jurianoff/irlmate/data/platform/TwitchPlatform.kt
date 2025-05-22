@@ -10,8 +10,8 @@ class TwitchPlatform : StreamingPlatform(
     name = "Twitch",
     isLoggedInProvider = { TwitchSession.isLoggedIn() },
     isEnabledProvider = { TwitchSession.showChatAndStatus },
-    getStreamStatus = suspend {
-        val status = TwitchStatusChecker.getStreamStatus()
+    getStreamStatus = { context ->
+        val status = TwitchStatusChecker.getStreamStatus(context)
         println("ℹ️ [TwitchPlatform] Status streama: $status")
         status?.let { StreamStatus.Twitch(it) }
     },

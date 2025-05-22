@@ -1,5 +1,6 @@
 package com.jurianoff.irlmate.data.twitch
 
+import android.content.Context
 import com.jurianoff.irlmate.ui.settings.TwitchSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -7,8 +8,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import com.jurianoff.irlmate.BuildConfig
-
-
 
 data class TwitchStreamStatus(
     val isLive: Boolean,
@@ -18,7 +17,13 @@ data class TwitchStreamStatus(
 object TwitchStatusChecker {
     private val client = OkHttpClient()
 
-    suspend fun getStreamStatus(): TwitchStreamStatus? = withContext(Dispatchers.IO) {
+    suspend fun getStreamStatus(context: Context): TwitchStreamStatus? = withContext(Dispatchers.IO) {
+        // Odśwież token jeśli trzeba (zwraca false jeśli nie można)
+        if (!TwitchSession.ensureValidAccessToken(context)) {
+            println("⚠️ [TwitchStatusChecker] Access token jest nieważny i nie udało się go odświeżyć.")
+            return@withContext null
+        }
+
         val userId = TwitchSession.userId
         val accessToken = TwitchSession.accessToken
         val clientId = BuildConfig.TWITCH_CLIENT_ID

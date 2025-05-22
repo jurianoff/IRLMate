@@ -20,6 +20,7 @@ class TwitchAuthRedirectActivity : Activity() {
         if (data != null && data.toString().startsWith("irlmate://auth/twitch/callback")) {
             val accessToken = data.getQueryParameter("access_token")
             val refreshToken = data.getQueryParameter("refresh_token")
+            val expiresIn = data.getQueryParameter("expires_in")?.toLongOrNull() ?: 3600L // domyślnie 1h
             val userId = data.getQueryParameter("user_id")
             val username = data.getQueryParameter("username")
 
@@ -35,7 +36,8 @@ class TwitchAuthRedirectActivity : Activity() {
                         accessToken = accessToken,
                         refreshToken = refreshToken,
                         userId = userId,
-                        username = username
+                        username = username,
+                        expiresInSeconds = expiresIn  // <-- przekazujemy expiresIn
                     )
 
                     Toast.makeText(

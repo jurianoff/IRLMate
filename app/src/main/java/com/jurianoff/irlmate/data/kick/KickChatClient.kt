@@ -1,5 +1,6 @@
 package com.jurianoff.irlmate.data.kick
 
+import android.content.Context
 import com.jurianoff.irlmate.data.model.ChatMessage
 import com.jurianoff.irlmate.ui.settings.KickSession
 import kotlinx.coroutines.*
@@ -9,9 +10,9 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class KickChatClient(
+    private val context: Context, // <-- DODANE!
     private val channelName: String,
     private val onMessageReceived: (ChatMessage) -> Unit
 ) {
@@ -43,7 +44,12 @@ class KickChatClient(
         pollingJob?.cancel()
     }
 
-    private fun getChannelId(channelName: String): String? {
+    private suspend fun getChannelId(channelName: String): String? {
+        // --- REFRESH TOKEN PRZED ŻĄDANIEM ---
+        if (!KickSession.ensureValidAccessToken(context)) {
+            println("❌ [KickChatClient] Token nieważny lub nie można odświeżyć – wylogowano")
+            return null
+        }
         return try {
             val request = createKickRequest("https://kick.com/api/v2/channels/$channelName")
 
@@ -63,7 +69,12 @@ class KickChatClient(
         }
     }
 
-    private fun fetchMessages(channelId: String) {
+    private suspend fun fetchMessages(channelId: String) {
+        // --- REFRESH TOKEN PRZED ŻĄDANIEM ---
+        if (!KickSession.ensureValidAccessToken(context)) {
+            println("❌ [KickChatClient] Token nieważny lub nie można odświeżyć – wylogowano")
+            return
+        }
         try {
             val request = createKickRequest(
                 "https://kick.com/api/v2/chatrooms/$channelId/messages"

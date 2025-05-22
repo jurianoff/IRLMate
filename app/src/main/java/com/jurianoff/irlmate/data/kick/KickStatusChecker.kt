@@ -1,9 +1,11 @@
 package com.jurianoff.irlmate.data.kick
 
+import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import org.json.JSONObject
+import com.jurianoff.irlmate.ui.settings.KickSession
 
 data class KickStreamStatus(
     val isLive: Boolean,
@@ -13,8 +15,15 @@ data class KickStreamStatus(
 object KickStatusChecker {
     private val client = OkHttpClient()
 
-    suspend fun getStreamStatus(channelName: String): KickStreamStatus = withContext(Dispatchers.IO) {
+    // Dodaj przekazywanie kontekstu!
+    suspend fun getStreamStatus(channelName: String, context: Context): KickStreamStatus = withContext(Dispatchers.IO) {
         try {
+            // Odśwież token, jeśli trzeba
+            if (!KickSession.ensureValidAccessToken(context)) {
+                println("❌ [KickStatusChecker] Brak ważnego tokena – sesja wygasła")
+                return@withContext KickStreamStatus(false, null)
+            }
+
             val request = createKickRequest("https://kick.com/api/v2/channels/$channelName")
 
             client.newCall(request).execute().use { response ->

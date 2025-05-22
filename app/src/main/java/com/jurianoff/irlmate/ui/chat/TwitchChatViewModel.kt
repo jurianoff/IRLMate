@@ -1,5 +1,6 @@
 package com.jurianoff.irlmate.ui.chat
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jurianoff.irlmate.data.model.ChatMessage
@@ -11,7 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class TwitchChatViewModel : ViewModel() {
+class TwitchChatViewModel(private val context: Context) : ViewModel() {
 
     private val platform = TwitchPlatform()
 
@@ -61,7 +62,7 @@ class TwitchChatViewModel : ViewModel() {
 
         statusJob = viewModelScope.launch(Dispatchers.IO) {
             while (true) {
-                val status = platform.getStreamStatus()
+                val status = platform.getStreamStatus(context)
                 println("📶 [TwitchChatVM] Status: $status")
                 _streamStatus.emit(status)
                 delay(10_000)

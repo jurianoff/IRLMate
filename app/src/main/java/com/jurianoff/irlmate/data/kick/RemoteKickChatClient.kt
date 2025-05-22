@@ -1,5 +1,6 @@
 package com.jurianoff.irlmate.data.kick
 
+import android.content.Context
 import com.jurianoff.irlmate.data.model.ChatMessage
 import com.jurianoff.irlmate.ui.settings.KickSession
 import kotlinx.coroutines.*
@@ -10,6 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class RemoteKickChatClient(
+    private val context: Context, // <--- DODAJ!
     private val channelName: String,
     private val onMessageReceived: (ChatMessage) -> Unit
 ) {
@@ -32,7 +34,14 @@ class RemoteKickChatClient(
         pollingJob?.cancel()
     }
 
-    private fun fetchMessages() {
+    private suspend fun fetchMessages() {
+        // Automatyczny refresh access_token!
+        if (!KickSession.ensureValidAccessToken(context)) {
+            println("⚠️ [RemoteKickChatClient] Brak ważnego tokena – sesja wygasła, wylogowano.")
+            // Tu możesz dodać dodatkową obsługę wylogowania, jeśli chcesz
+            return
+        }
+
         val token = KickSession.accessToken
 
         if (token.isNullOrEmpty()) {

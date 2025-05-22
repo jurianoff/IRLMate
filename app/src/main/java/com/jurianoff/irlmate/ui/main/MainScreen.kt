@@ -13,10 +13,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModelProvider
 import com.jurianoff.irlmate.R
 import com.jurianoff.irlmate.ui.chat.KickChatViewModel
 import com.jurianoff.irlmate.ui.chat.TwitchChatViewModel
@@ -28,9 +30,13 @@ import com.jurianoff.irlmate.ui.main.components.StreamStatusBar
 fun MainScreen(
     onSettingsClick: () -> Unit
 ) {
-    // ✅ ViewModel zgodny z cyklem życia
+    val context = LocalContext.current
     val kickViewModel: KickChatViewModel = viewModel()
-    val twitchViewModel: TwitchChatViewModel = viewModel()
+    val twitchViewModel: TwitchChatViewModel = viewModel(factory = object : ViewModelProvider.Factory {
+        override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+            return TwitchChatViewModel(context) as T
+        }
+    })
     val aggregatedViewModel: AggregatedChatViewModel = viewModel(
         factory = AggregatedChatViewModelFactory(kickViewModel, twitchViewModel)
     )
