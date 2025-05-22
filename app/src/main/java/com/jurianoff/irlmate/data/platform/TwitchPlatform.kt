@@ -1,16 +1,17 @@
 package com.jurianoff.irlmate.data.platform
 
+import android.content.Context
 import com.jurianoff.irlmate.data.model.ChatMessage
 import com.jurianoff.irlmate.data.twitch.TwitchChatClient
 import com.jurianoff.irlmate.data.twitch.TwitchStatusChecker
 import com.jurianoff.irlmate.data.twitch.TwitchStreamStatus
 import com.jurianoff.irlmate.ui.settings.TwitchSession
 
-class TwitchPlatform : StreamingPlatform(
+class TwitchPlatform(private val context: Context) : StreamingPlatform(
     name = "Twitch",
     isLoggedInProvider = { TwitchSession.isLoggedIn() },
     isEnabledProvider = { TwitchSession.showChatAndStatus },
-    getStreamStatus = { context ->
+    getStreamStatus = suspend {
         val status = TwitchStatusChecker.getStreamStatus(context)
         println("ℹ️ [TwitchPlatform] Status streama: $status")
         status?.let { StreamStatus.Twitch(it) }

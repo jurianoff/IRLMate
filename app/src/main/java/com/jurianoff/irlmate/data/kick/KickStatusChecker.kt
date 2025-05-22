@@ -16,7 +16,7 @@ object KickStatusChecker {
     private val client = OkHttpClient()
 
     // Dodaj przekazywanie kontekstu!
-    suspend fun getStreamStatus(channelName: String, context: Context): KickStreamStatus = withContext(Dispatchers.IO) {
+    suspend fun getStreamStatus(context: Context, channelName: String): KickStreamStatus = withContext(Dispatchers.IO) {
         try {
             // Odśwież token, jeśli trzeba
             if (!KickSession.ensureValidAccessToken(context)) {

@@ -1,5 +1,6 @@
 package com.jurianoff.irlmate.ui.chat
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jurianoff.irlmate.data.model.ChatMessage
@@ -11,9 +12,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class KickChatViewModel : ViewModel() {
+class KickChatViewModel(private val context: Context) : ViewModel() {
 
-    private val platform = KickPlatform()
+    private val platform = KickPlatform(context)
 
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
     val messages: StateFlow<List<ChatMessage>> = _messages.asStateFlow()
@@ -52,7 +53,6 @@ class KickChatViewModel : ViewModel() {
                 println("💬 [KickChatVM] ${formatted.user}: ${formatted.message} @ ${formatted.timestamp}")
                 _messages.update { current -> (current + formatted).takeLast(100) }
             }
-
         }
     }
 

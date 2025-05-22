@@ -25,18 +25,37 @@ import com.jurianoff.irlmate.ui.chat.TwitchChatViewModel
 import com.jurianoff.irlmate.ui.main.components.ChatList
 import com.jurianoff.irlmate.ui.main.components.StreamStatusBar
 
+// ---- FACTORY DO KICK ----
+class KickChatViewModelFactory(
+    private val context: android.content.Context
+) : ViewModelProvider.Factory {
+    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+        return KickChatViewModel(context) as T
+    }
+}
+
+// ---- FACTORY DO TWITCH ----
+class TwitchChatViewModelFactory(
+    private val context: android.content.Context
+) : ViewModelProvider.Factory {
+    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+        return TwitchChatViewModel(context) as T
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     onSettingsClick: () -> Unit
 ) {
     val context = LocalContext.current
-    val kickViewModel: KickChatViewModel = viewModel()
-    val twitchViewModel: TwitchChatViewModel = viewModel(factory = object : ViewModelProvider.Factory {
-        override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-            return TwitchChatViewModel(context) as T
-        }
-    })
+
+    val kickViewModel: KickChatViewModel = viewModel(
+        factory = remember { KickChatViewModelFactory(context) }
+    )
+    val twitchViewModel: TwitchChatViewModel = viewModel(
+        factory = remember { TwitchChatViewModelFactory(context) }
+    )
     val aggregatedViewModel: AggregatedChatViewModel = viewModel(
         factory = AggregatedChatViewModelFactory(kickViewModel, twitchViewModel)
     )
@@ -112,7 +131,6 @@ fun MainScreen(
                         StreamStatusBar(
                             statuses = streamStatuses.values.toList()
                         )
-
                     }
                     ChatList(
                         messages = messages,

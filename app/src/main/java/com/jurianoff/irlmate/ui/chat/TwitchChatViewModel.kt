@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class TwitchChatViewModel(private val context: Context) : ViewModel() {
 
-    private val platform = TwitchPlatform()
+    private val platform = TwitchPlatform(context)
 
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
     val messages: StateFlow<List<ChatMessage>> = _messages.asStateFlow()
@@ -62,7 +62,7 @@ class TwitchChatViewModel(private val context: Context) : ViewModel() {
 
         statusJob = viewModelScope.launch(Dispatchers.IO) {
             while (true) {
-                val status = platform.getStreamStatus(context)
+                val status = platform.getStreamStatus()
                 println("📶 [TwitchChatVM] Status: $status")
                 _streamStatus.emit(status)
                 delay(10_000)
