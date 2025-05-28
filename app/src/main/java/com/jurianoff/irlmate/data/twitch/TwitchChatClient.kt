@@ -89,4 +89,29 @@ class TwitchChatClient(
         webSocket?.close(1000, "Disconnected by user")
         println("🔌 [TwitchChatClient] Połączenie z IRC zostało zakończone")
     }
+    companion object {
+        /**
+         * Parsuje pojedynczą linię IRC Twitch do ChatMessage (podstawowy format).
+         * Przykład linii:
+         * :someuser!someuser@someuser.tmi.twitch.tv PRIVMSG #somechannel :Treść wiadomości
+         */
+        fun parseTwitchIrcMessage(ircLine: String): com.jurianoff.irlmate.data.model.ChatMessage? {
+            val regex = Regex("""^:([^\s!]+)!.* PRIVMSG #[^\s]+ :(.*)$""")
+            val match = regex.find(ircLine) ?: return null
+
+            val username = match.groupValues[1]
+            val message = match.groupValues[2]
+            val timestamp = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).format(java.util.Date())
+            val createdAt = System.currentTimeMillis()
+
+            return com.jurianoff.irlmate.data.model.ChatMessage(
+                platform = "Twitch",
+                user = username,
+                message = message,
+                userColor = null,
+                timestamp = timestamp,
+                createdAt = createdAt
+            )
+        }
+    }
 }

@@ -11,13 +11,14 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class AggregatedChatViewModel(
-    private val kick: KickChatViewModel,
-    private val twitch: TwitchChatViewModel
+    private val kick: com.jurianoff.irlmate.ui.chat.ChatViewModelBase,
+    private val twitch: com.jurianoff.irlmate.ui.chat.ChatViewModelBase,
+    startUpdateLoop: Boolean = true
 ) : ViewModel() {
 
     init {
         println("🚀 [AggregatedChatVM] Uruchomiono ViewModel")
-        updateLoop()
+        if (startUpdateLoop) updateLoop()
     }
 
     // 🔁 Co sekundę sprawdzaj stan platform i reaguj
@@ -64,4 +65,5 @@ class AggregatedChatViewModel(
         kick.disconnect()
         twitch.disconnect()
     }
+
 }

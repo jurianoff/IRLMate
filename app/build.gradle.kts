@@ -54,6 +54,9 @@ dependencies {
     implementation("androidx.browser:browser:1.8.0")
     implementation("com.pusher:pusher-java-client:2.4.0")
     implementation("com.google.accompanist:accompanist-flowlayout:0.34.0")
+    testImplementation("org.json:json:20240303")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
 
 
 

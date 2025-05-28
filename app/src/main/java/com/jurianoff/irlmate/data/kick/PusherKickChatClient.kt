@@ -80,4 +80,24 @@ class PusherKickChatClient(
         pusher?.disconnect()
         println("📴 [PusherKickChatClient] Rozłączono z Pusher")
     }
+    companion object {
+        fun parseKickChatEvent(jsonString: String): ChatMessage {
+            val messageObj = JSONObject(jsonString)
+
+            val senderObj = messageObj.getJSONObject("sender")
+            val username = senderObj.getString("username")
+            val message = messageObj.getString("content")
+            val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+            val createdAt = System.currentTimeMillis()
+
+            return ChatMessage(
+                platform = "Kick",
+                user = username,
+                message = message,
+                userColor = null,
+                timestamp = timestamp,
+                createdAt = createdAt
+            )
+        }
+    }
 }

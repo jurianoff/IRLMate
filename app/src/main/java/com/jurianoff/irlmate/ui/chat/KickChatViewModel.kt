@@ -12,15 +12,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class KickChatViewModel(private val context: Context) : ViewModel() {
+class KickChatViewModel(private val context: Context) : ViewModel(), ChatViewModelBase {
 
     private val platform = KickPlatform(context)
 
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
-    val messages: StateFlow<List<ChatMessage>> = _messages.asStateFlow()
+    override val messages: StateFlow<List<ChatMessage>> = _messages.asStateFlow()
 
     private val _streamStatus = MutableStateFlow<StreamStatus?>(null)
-    val streamStatus: StateFlow<StreamStatus?> = _streamStatus.asStateFlow()
+    override val streamStatus: StateFlow<StreamStatus?> = _streamStatus.asStateFlow()
 
     private var chatJob: Job? = null
     private var statusJob: Job? = null
@@ -34,7 +34,7 @@ class KickChatViewModel(private val context: Context) : ViewModel() {
         updateConnectionState()
     }
 
-    fun updateConnectionState() {
+    override fun updateConnectionState() {
         if (platform.isLoggedIn && platform.isEnabled) {
             connect()
             startStatusUpdates()
@@ -69,7 +69,7 @@ class KickChatViewModel(private val context: Context) : ViewModel() {
         }
     }
 
-    fun disconnect() {
+    override fun disconnect() {
         println("📴 [KickChatVM] Rozłączanie z Kick")
         chatJob?.cancel()
         chatJob = null
