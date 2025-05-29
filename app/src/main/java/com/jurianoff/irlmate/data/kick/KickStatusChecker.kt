@@ -15,19 +15,24 @@ data class KickStreamStatus(
 object KickStatusChecker {
     private val client = OkHttpClient()
 
-    /**
-     * Nowa funkcja – czysty parser JSON -> KickStreamStatus (do testów unit i refaktoryzacji)
-     */
-    fun parseKickStreamStatus(jsonString: String): KickStreamStatus {
-        val json = JSONObject(jsonString)
-        val livestream = json.optJSONObject("livestream")
-        return if (livestream != null && livestream.optBoolean("is_live")) {
-            val viewers = livestream.optInt("viewer_count", 0)
-            KickStreamStatus(true, viewers)
-        } else {
+    fun parseKickStreamStatus(json: String): KickStreamStatus {
+        return try {
+            if (json.isBlank()) return KickStreamStatus(false, null)
+
+            val obj = org.json.JSONObject(json)
+            val livestream = obj.optJSONObject("livestream")
+            if (livestream != null && livestream.optBoolean("is_live")) {
+                val viewers = livestream.optInt("viewer_count", 0)
+                KickStreamStatus(true, viewers)
+            } else {
+                KickStreamStatus(false, null)
+            }
+        } catch (e: Exception) {
+            // Log.d("KickStatusChecker", "parseKickStreamStatus Exception: ${e.message}")
             KickStreamStatus(false, null)
         }
     }
+
 
     // Oryginalna funkcja, teraz korzysta z parsera!
     suspend fun getStreamStatus(context: Context, channelName: String): KickStreamStatus = withContext(Dispatchers.IO) {

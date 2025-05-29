@@ -1,6 +1,6 @@
 package com.jurianoff.irlmate.data.twitch
 
-import org.junit.Assert
+import org.junit.Assert.*
 import org.junit.Test
 
 class TwitchStatusCheckerTest {
@@ -21,8 +21,8 @@ class TwitchStatusCheckerTest {
         """.trimIndent()
 
         val status = TwitchStatusChecker.parseTwitchStreamStatus(json)
-        Assert.assertTrue(status.isLive)
-        Assert.assertEquals(321, status.viewers)
+        assertTrue(status.isLive)
+        assertEquals(321, status.viewers)
     }
 
     @Test
@@ -34,8 +34,8 @@ class TwitchStatusCheckerTest {
         """.trimIndent()
 
         val status = TwitchStatusChecker.parseTwitchStreamStatus(json)
-        Assert.assertFalse(status.isLive)
-        Assert.assertNull(status.viewers)
+        assertFalse(status.isLive)
+        assertNull(status.viewers)
     }
 
     @Test
@@ -47,7 +47,42 @@ class TwitchStatusCheckerTest {
         """.trimIndent()
 
         val status = TwitchStatusChecker.parseTwitchStreamStatus(json)
-        Assert.assertFalse(status.isLive)
-        Assert.assertNull(status.viewers)
+        assertFalse(status.isLive)
+        assertNull(status.viewers)
+    }
+
+    @Test
+    fun `empty json handled safely`() {
+        val json = ""
+        val status = TwitchStatusChecker.parseTwitchStreamStatus(json)
+        assertFalse(status.isLive)
+        assertNull(status.viewers)
+    }
+
+    @Test
+    fun `broken json is handled safely`() {
+        val json = "{ data: [ { viewer_count: 123 " // brak nawiasów
+        val status = TwitchStatusChecker.parseTwitchStreamStatus(json)
+        assertFalse(status.isLive)
+        assertNull(status.viewers)
+    }
+
+    @Test
+    fun `stream data missing viewer count`() {
+        val json = """
+            {
+              "data": [
+                {
+                  "id": "9999",
+                  "user_id": "8888",
+                  "type": "live"
+                }
+              ]
+            }
+        """.trimIndent()
+
+        val status = TwitchStatusChecker.parseTwitchStreamStatus(json)
+        assertTrue(status.isLive)
+        assertEquals(0, status.viewers) // albo assertNull, zależnie od Twojej obsługi
     }
 }
