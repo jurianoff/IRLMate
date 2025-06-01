@@ -56,6 +56,9 @@ dependencies {
     implementation("com.google.accompanist:accompanist-flowlayout:0.34.0")
     testImplementation("org.json:json:20240303")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt:coil-gif:2.6.0")
+    implementation("io.coil-kt:coil-webp:2.6.0")
 
 
 

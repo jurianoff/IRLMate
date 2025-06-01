@@ -18,8 +18,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.jurianoff.irlmate.R
 import com.jurianoff.irlmate.data.model.ChatMessage
+import com.jurianoff.irlmate.data.model.MessagePart
 
 @Composable
 fun ChatMessageItem(
@@ -30,11 +32,11 @@ fun ChatMessageItem(
 
     val alphaAnim by animateFloatAsState(
         targetValue = if (appeared) 1f else 0f,
-        animationSpec = tween(300, easing = LinearOutSlowInEasing)
+        animationSpec = tween(300, easing = LinearOutSlowInEasing), label = ""
     )
     val offsetAnim by animateDpAsState(
         targetValue = if (appeared) 0.dp else 12.dp,
-        animationSpec = tween(300, easing = LinearOutSlowInEasing)
+        animationSpec = tween(300, easing = LinearOutSlowInEasing), label = ""
     )
 
     LaunchedEffect(Unit) { appeared = true }
@@ -100,11 +102,36 @@ private fun MessageRow(message: ChatMessage, modifier: Modifier) {
             }
 
             Spacer(Modifier.height(2.dp))
-            Text(
-                text = message.message,
-                style = MaterialTheme.typography.bodyMedium,
-                color = textColor
-            )
+
+            // WYŚWIETLANIE WIADOMOŚCI Z EMOTKAMI I TEKSTEM INLINE
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(top = 2.dp)
+            ) {
+                val parts = message.parts ?: listOf(MessagePart.Text(message.message))
+                parts.forEach { part ->
+                    when (part) {
+                        is MessagePart.Text -> {
+                            if (part.text.isNotEmpty()) {
+                                Text(
+                                    text = part.text,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = textColor
+                                )
+                            }
+                        }
+                        is MessagePart.Emote -> {
+                            AsyncImage(
+                                model = part.url,
+                                contentDescription = part.alt,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .padding(horizontal = 1.dp)
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

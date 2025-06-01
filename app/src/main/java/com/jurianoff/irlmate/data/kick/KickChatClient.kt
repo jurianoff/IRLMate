@@ -2,6 +2,7 @@ package com.jurianoff.irlmate.data.kick
 
 import android.content.Context
 import com.jurianoff.irlmate.data.model.ChatMessage
+import com.jurianoff.irlmate.data.model.MessagePart
 import com.jurianoff.irlmate.ui.settings.KickSession
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
@@ -10,9 +11,10 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import com.jurianoff.irlmate.data.kick.parseKickInlineEmotes
 
 class KickChatClient(
-    private val context: Context, // <-- DODANE!
+    private val context: Context,
     private val channelName: String,
     private val onMessageReceived: (ChatMessage) -> Unit
 ) {
@@ -45,20 +47,17 @@ class KickChatClient(
     }
 
     private suspend fun getChannelId(channelName: String): String? {
-        // --- REFRESH TOKEN PRZED ŻĄDANIEM ---
         if (!KickSession.ensureValidAccessToken(context)) {
             println("❌ [KickChatClient] Token nieważny lub nie można odświeżyć – wylogowano")
             return null
         }
         return try {
             val request = createKickRequest("https://kick.com/api/v2/channels/$channelName")
-
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     println("❌ [KickChatClient] Błąd pobierania channelId: ${response.code}")
                     return null
                 }
-
                 val body = response.body?.string() ?: return null
                 val json = JSONObject(body)
                 json.getString("id")
@@ -70,7 +69,6 @@ class KickChatClient(
     }
 
     private suspend fun fetchMessages(channelId: String) {
-        // --- REFRESH TOKEN PRZED ŻĄDANIEM ---
         if (!KickSession.ensureValidAccessToken(context)) {
             println("❌ [KickChatClient] Token nieważny lub nie można odświeżyć – wylogowano")
             return
@@ -104,12 +102,14 @@ class KickChatClient(
                 for (i in 0 until messagesArray.length()) {
                     val msg = messagesArray.getJSONObject(i)
                     val id = msg.getInt("id")
-
                     if (lastMessageId != null && id <= lastMessageId!!) continue
 
                     val user = msg.getJSONObject("sender").getString("username")
                     val message = msg.getString("content")
                     val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+
+                    // EMOTE: pobierz pole "emotes" (jeśli istnieje)
+                    val emotesArray = if (msg.has("emotes") && !msg.isNull("emotes")) msg.getJSONArray("emotes") else null
 
                     println("💬 [KickChatClient] Nowa wiadomość: [$user] $message")
 
@@ -119,7 +119,8 @@ class KickChatClient(
                             user = user,
                             message = message,
                             userColor = null,
-                            timestamp = timestamp
+                            timestamp = timestamp,
+                            parts = parseKickEmotes(message, emotesArray)
                         )
                     )
 
@@ -140,5 +141,42 @@ class KickChatClient(
                 }
             }
             .build()
+    }
+
+    // ====== EMOTE PARSER ======
+    private fun parseKickEmotes(
+        message: String,
+        emotesArray: JSONArray?
+    ): List<MessagePart> {
+        // KLUCZOWA LINIA:
+        if (emotesArray == null || emotesArray.length() == 0) return parseKickInlineEmotes(message)
+        data class EmoteRange(val start: Int, val end: Int, val url: String, val code: String)
+        val emoteRanges = mutableListOf<EmoteRange>()
+        for (i in 0 until emotesArray.length()) {
+            val emoteObj = emotesArray.getJSONObject(i)
+            val start = emoteObj.getInt("start")
+            val end = emoteObj.getInt("end")
+            val url = emoteObj.optString("url")
+            val code = emoteObj.optString("name")
+            emoteRanges += EmoteRange(start, end, url, code)
+        }
+        val sortedEmotes = emoteRanges.sortedBy { it.start }
+        val parts = mutableListOf<MessagePart>()
+
+        var i = 0
+        while (i < message.length) {
+            val emote = sortedEmotes.firstOrNull { it.start == i }
+            if (emote != null) {
+                parts += MessagePart.Emote(emote.url, message.substring(emote.start, emote.end + 1))
+                i = emote.end + 1
+            } else {
+                val nextEmoteStart = sortedEmotes.map { it.start }.firstOrNull { it > i } ?: message.length
+                if (i < nextEmoteStart) {
+                    parts += MessagePart.Text(message.substring(i, nextEmoteStart))
+                }
+                i = nextEmoteStart
+            }
+        }
+        return parts
     }
 }

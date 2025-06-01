@@ -1,6 +1,7 @@
 package com.jurianoff.irlmate.data.twitch
 
 import com.jurianoff.irlmate.data.model.ChatMessage
+import com.jurianoff.irlmate.data.model.MessagePart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -55,9 +56,16 @@ class TwitchChatClient(
                 for (line in lines) {
                     if ("PRIVMSG" in line && "display-name=" in line) {
                         try {
-                            val user = line.substringAfter("display-name=").substringBefore(";")
+                            // [emotes] Parsowanie tagów IRC
+                            val tagsPart = line.substringAfter('@').substringBefore(' ')
+                            val tags = tagsPart.split(';').associate { tag ->
+                                val (k, v) = tag.split('=', limit = 2).let { it[0] to it.getOrElse(1) { "" } }
+                                k to v
+                            }
+                            val user = tags["display-name"] ?: "unknown"
                             val message = line.substringAfter("PRIVMSG #$channelName :").trim()
-                            val color = line.substringAfter("color=").substringBefore(";").ifBlank { null }
+                            val color = tags["color"].takeIf { !it.isNullOrBlank() }
+                            val emotes = tags["emotes"]
 
                             val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
                             val createdAt = System.currentTimeMillis()
@@ -69,11 +77,12 @@ class TwitchChatClient(
                                     message = message,
                                     userColor = color,
                                     timestamp = timestamp,
-                                    createdAt = createdAt
+                                    createdAt = createdAt,
+                                    parts = parseTwitchEmotes(message, emotes) // [emotes]
                                 )
                             )
                         } catch (e: Exception) {
-                            println("⚠️ [TwitchChatClient] Błąd parsowania linii: $line")
+                            println("⚠️ [TwitchChatClient] Błąd parsowania linii: $line\n$e")
                         }
                     }
                 }
@@ -89,6 +98,7 @@ class TwitchChatClient(
         webSocket?.close(1000, "Disconnected by user")
         println("🔌 [TwitchChatClient] Połączenie z IRC zostało zakończone")
     }
+
     companion object {
         /**
          * Parsuje pojedynczą linię IRC Twitch do ChatMessage (podstawowy format).
@@ -96,22 +106,72 @@ class TwitchChatClient(
          * :someuser!someuser@someuser.tmi.twitch.tv PRIVMSG #somechannel :Treść wiadomości
          */
         fun parseTwitchIrcMessage(ircLine: String): com.jurianoff.irlmate.data.model.ChatMessage? {
-            val regex = Regex("""^:([^\s!]+)!.* PRIVMSG #[^\s]+ :(.*)$""")
+            val regex = Regex("""^@(.+?)\s+:([^\s!]+)!.* PRIVMSG #[^\s]+ :(.*)$""")
             val match = regex.find(ircLine) ?: return null
 
-            val username = match.groupValues[1]
-            val message = match.groupValues[2]
-            val timestamp = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).format(java.util.Date())
+            // [emotes] Parsowanie tagów IRC
+            val tagsRaw = match.groupValues[1]
+            val tags = tagsRaw.split(';').associate { tag ->
+                val (k, v) = tag.split('=', limit = 2).let { it[0] to it.getOrElse(1) { "" } }
+                k to v
+            }
+            val username = tags["display-name"] ?: match.groupValues[2]
+            val message = match.groupValues[3]
+            val color = tags["color"].takeIf { !it.isNullOrBlank() }
+            val emotes = tags["emotes"]
+
+            val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
             val createdAt = System.currentTimeMillis()
 
             return com.jurianoff.irlmate.data.model.ChatMessage(
                 platform = "Twitch",
                 user = username,
                 message = message,
-                userColor = null,
+                userColor = color,
                 timestamp = timestamp,
-                createdAt = createdAt
+                createdAt = createdAt,
+                parts = parseTwitchEmotes(message, emotes) // [emotes]
             )
         }
     }
+}
+
+// [emotes] Funkcja pomocnicza do parsowania emotek Twitch
+private fun parseTwitchEmotes(
+    message: String,
+    emotesTag: String?
+): List<MessagePart> {
+    if (emotesTag.isNullOrBlank() || emotesTag == "") return listOf(MessagePart.Text(message))
+
+    data class EmoteRange(val start: Int, val end: Int, val emoteId: String)
+    val emoteRanges = emotesTag.split('/').flatMap { group ->
+        val splitGroup = group.split(':')
+        if (splitGroup.size < 2) return@flatMap emptyList<EmoteRange>()
+        val emoteId = splitGroup[0]
+        splitGroup[1].split(',').map { range ->
+            val (start, end) = range.split('-').map { it.toInt() }
+            EmoteRange(start, end, emoteId)
+        }
+    }
+
+    val map = emoteRanges.associateBy { it.start }
+    val parts = mutableListOf<MessagePart>()
+
+    var i = 0
+    while (i < message.length) {
+        val emoteRange = map[i]
+        if (emoteRange != null) {
+            val emoteText = message.substring(emoteRange.start, emoteRange.end + 1)
+            val url = "https://static-cdn.jtvnw.net/emoticons/v2/${emoteRange.emoteId}/default/dark/1.0"
+            parts += MessagePart.Emote(url, emoteText)
+            i = emoteRange.end + 1
+        } else {
+            val nextEmote = map.keys.filter { it > i }.minOrNull() ?: message.length
+            if (i < nextEmote) {
+                parts += MessagePart.Text(message.substring(i, nextEmote))
+            }
+            i = nextEmote
+        }
+    }
+    return parts
 }

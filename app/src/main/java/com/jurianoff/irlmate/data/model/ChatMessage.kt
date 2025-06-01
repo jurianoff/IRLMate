@@ -9,5 +9,6 @@ data class ChatMessage(
     val message: String,
     val userColor: String? = null,
     val createdAt: Long = System.currentTimeMillis(), // używane do sortowania
-    val timestamp: String = "" // tylko do wyświetlania (np. "13:17")
+    val timestamp: String = "",
+    val parts: List<MessagePart>? = null // lista fragmentów tekst/emotki, null jeśli brak emotek
 )
