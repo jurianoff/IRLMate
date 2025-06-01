@@ -162,8 +162,9 @@ private fun parseTwitchEmotes(
         val emoteRange = map[i]
         if (emoteRange != null) {
             val emoteText = message.substring(emoteRange.start, emoteRange.end + 1)
-            val url = "https://static-cdn.jtvnw.net/emoticons/v2/${emoteRange.emoteId}/default/dark/1.0"
-            parts += MessagePart.Emote(url, emoteText)
+            val animatedUrl = "https://static-cdn.jtvnw.net/emoticons/v2/${emoteRange.emoteId}/animated/dark/1.0"
+            val staticUrl = "https://static-cdn.jtvnw.net/emoticons/v2/${emoteRange.emoteId}/default/dark/1.0"
+            parts += MessagePart.Emote(animatedUrl, emoteText, fallbackUrl = staticUrl)
             i = emoteRange.end + 1
         } else {
             val nextEmote = map.keys.filter { it > i }.minOrNull() ?: message.length

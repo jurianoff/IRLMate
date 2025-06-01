@@ -16,9 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.jurianoff.irlmate.R
 import com.jurianoff.irlmate.data.model.ChatMessage
 import com.jurianoff.irlmate.data.model.MessagePart
@@ -62,6 +66,21 @@ private fun MessageRow(message: ChatMessage, modifier: Modifier) {
         else     -> null
     }
     val textColor = Color.White
+
+    // >>>> ImageLoader dla animowanych GIF/WebP
+    val context = LocalContext.current
+    val animatedImageLoader = remember {
+        ImageLoader.Builder(context)
+            .components {
+                if (android.os.Build.VERSION.SDK_INT >= 28) {
+                    add(ImageDecoderDecoder.Factory())
+                } else {
+                    add(GifDecoder.Factory())
+                }
+            }
+            .crossfade(true)
+            .build()
+    }
 
     Row(
         modifier = modifier
@@ -121,12 +140,14 @@ private fun MessageRow(message: ChatMessage, modifier: Modifier) {
                             }
                         }
                         is MessagePart.Emote -> {
-                            AsyncImage(
-                                model = part.url,
-                                contentDescription = part.alt,
+                            EmoteImage(
+                                url = part.url,
+                                fallbackUrl = part.fallbackUrl,
+                                alt = part.alt,
                                 modifier = Modifier
                                     .size(24.dp)
-                                    .padding(horizontal = 1.dp)
+                                    .padding(horizontal = 1.dp),
+                                imageLoader = animatedImageLoader
                             )
                         }
                     }
@@ -134,4 +155,24 @@ private fun MessageRow(message: ChatMessage, modifier: Modifier) {
             }
         }
     }
+}
+
+@Composable
+fun EmoteImage(
+    url: String,
+    fallbackUrl: String? = null,
+    alt: String = "",
+    modifier: Modifier = Modifier,
+    imageLoader: ImageLoader
+) {
+    var currentUrl by remember { mutableStateOf(url) }
+    AsyncImage(
+        model = currentUrl,
+        contentDescription = alt,
+        modifier = modifier,
+        imageLoader = imageLoader,
+        onError = {
+            if (fallbackUrl != null && currentUrl == url) currentUrl = fallbackUrl
+        }
+    )
 }
