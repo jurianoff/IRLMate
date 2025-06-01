@@ -128,16 +128,32 @@ fun MainScreen(
                             .weight(1f)
                             .padding(16.dp)
                     ) {
+                        Text(
+                            text = stringResource(R.string.status_panel_description),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(start = 0.dp, bottom = 0.dp, top = 2.dp)
+                        )
                         StreamStatusBar(
                             statuses = streamStatuses.values.toList()
                         )
                     }
-                    ChatList(
-                        messages = messages,
+                    Column(
                         modifier = Modifier
                             .weight(2f)
                             .fillMaxHeight()
-                    )
+                    ) {
+                        Text(
+                            text = stringResource(R.string.chat_panel_description),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(start = 12.dp, bottom = 0.dp, top = 2.dp)
+                        )
+                        ChatList(
+                            messages = messages,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
             } else {
                 Column(
@@ -145,8 +161,20 @@ fun MainScreen(
                         .padding(padding)
                         .fillMaxSize()
                 ) {
+                    Text(
+                        text = stringResource(R.string.status_panel_description),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 24.dp, bottom = 0.dp, top = 2.dp)
+                    )
                     StreamStatusBar(
                         statuses = streamStatuses.values.toList()
+                    )
+                    Text(
+                        text = stringResource(R.string.chat_panel_description),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 24.dp, bottom = 0.dp, top = 2.dp)
                     )
                     ChatList(
                         messages = messages,

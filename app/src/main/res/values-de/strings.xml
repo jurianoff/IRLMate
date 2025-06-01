@@ -67,5 +67,8 @@
     <string name="theme_mode_light">Hell</string>
     <string name="theme_mode_dark">Dunkel</string>
     <string name="theme_mode_system">System</string>
+    <string name="status_panel_description">Stream-Status</string>
+    <string name="chat_panel_description">Chat</string>
+    <string name="report_a_bug">Fehler melden</string>
 
 </resources>

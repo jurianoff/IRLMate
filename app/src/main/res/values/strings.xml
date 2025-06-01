@@ -68,5 +68,9 @@
     <string name="theme_mode_light">Light</string>
     <string name="theme_mode_dark">Dark</string>
     <string name="theme_mode_system">System</string>
+    <string name="status_panel_description">Stream status</string>
+    <string name="chat_panel_description">Chat</string>
+    <string name="report_a_bug">Report a bug</string>
+
 
 </resources>

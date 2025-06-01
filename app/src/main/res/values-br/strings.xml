@@ -67,6 +67,9 @@
     <string name="theme_mode_light">Claro</string>
     <string name="theme_mode_dark">Escuro</string>
     <string name="theme_mode_system">Sistema</string>
+    <string name="status_panel_description">Status da transmissão</string>
+    <string name="chat_panel_description">Chat</string>
+    <string name="report_a_bug">Reportar um erro</string>
 
 
 </resources>

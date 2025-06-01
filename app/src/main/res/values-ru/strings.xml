@@ -67,5 +67,8 @@
     <string name="theme_mode_light">Светлая</string>
     <string name="theme_mode_dark">Тёмная</string>
     <string name="theme_mode_system">Системная</string>
+    <string name="status_panel_description">Статус трансляции</string>
+    <string name="chat_panel_description">Чат</string>
+    <string name="report_a_bug">Сообщить об ошибке</string>
 
 </resources>

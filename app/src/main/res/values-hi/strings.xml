@@ -67,6 +67,9 @@
     <string name="theme_mode_light">हल्का</string>
     <string name="theme_mode_dark">गहरा</string>
     <string name="theme_mode_system">सिस्टम</string>
+    <string name="status_panel_description">स्ट्रीम स्थिति</string>
+    <string name="chat_panel_description">चैट</string>
+    <string name="report_a_bug">बग रिपोर्ट करें</string>
 
 
 </resources>

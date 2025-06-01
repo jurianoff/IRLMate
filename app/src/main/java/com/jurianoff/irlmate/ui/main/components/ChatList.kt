@@ -91,7 +91,7 @@ fun ChatList(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 0.dp)
         ) {
             itemsIndexed(messages, key = { _, m -> m.id }) { _, m ->
                 ChatMessageItem(m)

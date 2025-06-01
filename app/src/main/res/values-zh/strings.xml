@@ -67,6 +67,9 @@
     <string name="theme_mode_light">浅色</string>
     <string name="theme_mode_dark">深色</string>
     <string name="theme_mode_system">系统</string>
+    <string name="status_panel_description">直播状态</string>
+    <string name="chat_panel_description">聊天</string>
+    <string name="report_a_bug">报告错误</string>
 
 
 </resources>

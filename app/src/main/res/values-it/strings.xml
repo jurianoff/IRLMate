@@ -68,5 +68,8 @@
     <string name="theme_mode_light">Chiaro</string>
     <string name="theme_mode_dark">Scuro</string>
     <string name="theme_mode_system">Sistema</string>
+    <string name="status_panel_description">Stato dello stream</string>
+    <string name="chat_panel_description">Chat</string>
+    <string name="report_a_bug">Segnala un bug</string>
 
 </resources>

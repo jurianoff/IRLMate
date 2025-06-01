@@ -23,7 +23,7 @@ fun StreamStatusBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 0.dp)
             .background(backgroundColor, shape = RoundedCornerShape(16.dp))
             .border(1.dp, borderColor, shape = RoundedCornerShape(16.dp))
             .padding(horizontal = 16.dp, vertical = 12.dp)

@@ -49,6 +49,23 @@ fun SettingsScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            val intent = android.content.Intent(
+                                android.content.Intent.ACTION_VIEW,
+                                android.net.Uri.parse("https://docs.google.com/forms/d/e/1FAIpQLSc_tstOiUmINasOhk-6GS18J8FvGYj1OnUohRp6R99N2s9Xgw/viewform?usp=dialog")
+                            )
+                            intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(intent)
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_bug_report),
+                            contentDescription = stringResource(R.string.report_a_bug)
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors()
             )
         }

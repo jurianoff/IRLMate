@@ -67,5 +67,8 @@
     <string name="theme_mode_light">Clair</string>
     <string name="theme_mode_dark">Sombre</string>
     <string name="theme_mode_system">Système</string>
+    <string name="status_panel_description">Statut du stream</string>
+    <string name="chat_panel_description">Chat</string>
+    <string name="report_a_bug">Signaler un bug</string>
 
 </resources>

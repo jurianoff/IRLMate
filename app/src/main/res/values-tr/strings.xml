@@ -67,5 +67,8 @@
     <string name="theme_mode_light">Açık</string>
     <string name="theme_mode_dark">Koyu</string>
     <string name="theme_mode_system">Sistem</string>
+    <string name="status_panel_description">Yayın durumu</string>
+    <string name="chat_panel_description">Sohbet</string>
+    <string name="report_a_bug">Hata bildir</string>
 
 </resources>
