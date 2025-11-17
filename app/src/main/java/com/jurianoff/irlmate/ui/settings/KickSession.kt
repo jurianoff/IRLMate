@@ -6,6 +6,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -41,7 +42,6 @@ object KickSession {
                 && !userId.isNullOrEmpty()
                 && !username.isNullOrEmpty()
                 && !channelId.isNullOrEmpty()
-                && !chatroomId.isNullOrEmpty()
     }
 
     suspend fun setShowChatAndStatus(context: Context, show: Boolean) {
@@ -145,8 +145,8 @@ object KickSession {
             if (!response.isSuccessful) return false
             val body = response.body?.string() ?: return false
             val json = JSONObject(body)
-            val newAccessToken = json.optString("access_token", null)
-            val newRefreshToken = json.optString("refresh_token", null)
+            val newAccessToken = json.optString("access_token").takeIf { it.isNotBlank() }
+            val newRefreshToken = json.optString("refresh_token").takeIf { it.isNotBlank() }
             val expiresIn = json.optLong("expires_in", 7200)
             if (newAccessToken.isNullOrEmpty() || newRefreshToken.isNullOrEmpty()) return false
 
@@ -168,3 +168,9 @@ object KickSession {
         }
     }
 }
+
+
+
+
+
+

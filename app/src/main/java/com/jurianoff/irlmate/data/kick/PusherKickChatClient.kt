@@ -38,7 +38,9 @@ class PusherKickChatClient(
 
         pusher?.connection?.bind(ConnectionState.ALL, object : ConnectionEventListener {
             override fun onConnectionStateChange(change: ConnectionStateChange) {
-                println("📶 [PusherKickChatClient] Status: ${change.currentState}")
+                println(
+                    "📶 [PusherKickChatClient] Status zmiana: ${change.previousState} -> ${change.currentState}"
+                )
             }
 
             override fun onError(message: String?, code: String?, e: Exception?) {
@@ -48,7 +50,12 @@ class PusherKickChatClient(
 
         val channel = pusher!!.subscribe(channelName)
 
+        channel.bindGlobal(SubscriptionEventListener { event ->
+            println("🌐 [PusherKickChatClient] Global event ${event.eventName}: ${event.data}")
+        })
+
         channel.bind("App\\Events\\ChatMessageEvent", SubscriptionEventListener { event ->
+            println("ℹ️ [PusherKickChatClient] Otrzymano event: ${event.eventName} length=${event.data?.length}")
             try {
                 println("📥 [PusherKickChatClient] Surowa wiadomość: ${event.data}")
                 val messageObj = JSONObject(event.data)

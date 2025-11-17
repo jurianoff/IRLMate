@@ -43,7 +43,9 @@ object KickStatusChecker {
                 return@withContext KickStreamStatus(false, null)
             }
 
-            val request = createKickRequest("https://kick.com/api/v2/channels/$channelName")
+            val request = createKickRequest(
+                "https://api.kick.com/public/v1/channels?slug[]=$channelName"
+            )
 
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
@@ -52,8 +54,12 @@ object KickStatusChecker {
                 }
 
                 val body = response.body?.string() ?: return@withContext KickStreamStatus(false, null)
-                // Korzystamy z parsera:
-                return@withContext parseKickStreamStatus(body)
+                val json = org.json.JSONObject(body)
+                val channel = json.optJSONArray("data")?.optJSONObject(0)
+                val stream = channel?.optJSONObject("stream")
+                val isLive = stream?.optBoolean("is_live") == true
+                val viewers = stream?.optInt("viewer_count")
+                return@withContext KickStreamStatus(isLive, viewers)
             }
         } catch (e: Exception) {
             println("❌ [KickStatusChecker] Wyjątek: ${e.message}")

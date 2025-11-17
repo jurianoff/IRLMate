@@ -2,9 +2,9 @@ package com.jurianoff.irlmate.data.platform
 
 import android.content.Context
 import com.jurianoff.irlmate.data.kick.KickStatusChecker
-import com.jurianoff.irlmate.data.kick.PusherKickChatClient
-import com.jurianoff.irlmate.ui.settings.KickSession
+import com.jurianoff.irlmate.data.kick.RemoteKickChatClient
 import com.jurianoff.irlmate.data.model.ChatMessage
+import com.jurianoff.irlmate.ui.settings.KickSession
 
 class KickPlatform(private val context: Context) : StreamingPlatform(
     name = "Kick",
@@ -13,27 +13,40 @@ class KickPlatform(private val context: Context) : StreamingPlatform(
     getStreamStatus = suspend {
         val username = KickSession.username
         val status = if (username != null) KickStatusChecker.getStreamStatus(context, username) else null
-        println("ℹ️ [KickPlatform] Status streama: $status")
+        println("[KickPlatform] Stream status: $status")
         status?.let { StreamStatus.Kick(it) }
     },
-    connectChat = { onMessage: (ChatMessage) -> Unit ->
-        val chatroomId = KickSession.chatroomId
-        val username = KickSession.username
-        println("🔌 [KickPlatform] connectChat wywołany dla: $username (chatroomId=$chatroomId)")
-
-        if (chatroomId != null) {
-            chatClient = PusherKickChatClient(onMessage)
-            chatClient?.connect()
-        } else {
-            println("⚠️ [KickPlatform] chatroomId == null – nie można połączyć z czatem")
-        }
+    connectChat = {
+        KickPlatform.instance.startChat(it)
     },
     disconnectChat = {
-        chatClient?.disconnect()
-        println("📴 [KickPlatform] Rozłączono z Kick")
+        KickPlatform.instance.stopChat()
     }
 ) {
+    private var chatClient: RemoteKickChatClient? = null
+
+    init {
+        instance = this
+    }
+
+    private fun startChat(onMessage: (ChatMessage) -> Unit) {
+        val broadcasterId = KickSession.userId
+        if (broadcasterId.isNullOrEmpty()) {
+            println("[KickPlatform] Missing broadcasterId - cannot connect")
+            return
+        }
+        println("[KickPlatform] Polling backend for broadcaster=$broadcasterId")
+        chatClient = RemoteKickChatClient(context, broadcasterId, onMessage)
+        chatClient?.connect()
+    }
+
+    private fun stopChat() {
+        chatClient?.disconnect()
+        println("[KickPlatform] Disconnected from Kick")
+    }
+
     companion object {
-        private var chatClient: PusherKickChatClient? = null
+        lateinit var instance: KickPlatform
+            private set
     }
 }

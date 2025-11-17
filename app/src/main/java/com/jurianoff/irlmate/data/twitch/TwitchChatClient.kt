@@ -106,35 +106,52 @@ class TwitchChatClient(
          * :someuser!someuser@someuser.tmi.twitch.tv PRIVMSG #somechannel :Treść wiadomości
          */
         fun parseTwitchIrcMessage(ircLine: String): com.jurianoff.irlmate.data.model.ChatMessage? {
-            val regex = Regex("""^@(.+?)\s+:([^\s!]+)!.* PRIVMSG #[^\s]+ :(.*)$""")
-            val match = regex.find(ircLine) ?: return null
+            val tagRegex = Regex("""^@(.+?)\s+:([^\s!]+)!.* PRIVMSG #[^\s]+ :(.*)$""")
+            val simpleRegex = Regex("""^:([^\s!]+)!.* PRIVMSG #[^\s]+ :(.*)$""")
 
-            // [emotes] Parsowanie tagów IRC
-            val tagsRaw = match.groupValues[1]
-            val tags = tagsRaw.split(';').associate { tag ->
-                val (k, v) = tag.split('=', limit = 2).let { it[0] to it.getOrElse(1) { "" } }
-                k to v
-            }
-            val username = tags["display-name"] ?: match.groupValues[2]
-            val message = match.groupValues[3]
-            val color = tags["color"].takeIf { !it.isNullOrBlank() }
-            val emotes = tags["emotes"]
+            val parsed = tagRegex.find(ircLine)?.let { match ->
+                val tagsRaw = match.groupValues[1]
+                val tags = tagsRaw.split(';').associate { tag ->
+                    val (k, v) = tag.split('=', limit = 2).let { it[0] to it.getOrElse(1) { "" } }
+                    k to v
+                }
+                ParsedIrcMessage(
+                    message = match.groupValues[3],
+                    username = tags["display-name"] ?: match.groupValues[2],
+                    color = tags["color"].takeIf { !it.isNullOrBlank() },
+                    emotes = tags["emotes"]
+                )
+            } ?: simpleRegex.find(ircLine)?.let { match ->
+                ParsedIrcMessage(
+                    message = match.groupValues[2],
+                    username = match.groupValues[1],
+                    color = null,
+                    emotes = null
+                )
+            } ?: return null
 
             val timestamp = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
             val createdAt = System.currentTimeMillis()
 
             return com.jurianoff.irlmate.data.model.ChatMessage(
                 platform = "Twitch",
-                user = username,
-                message = message,
-                userColor = color,
+                user = parsed.username,
+                message = parsed.message,
+                userColor = parsed.color,
                 timestamp = timestamp,
                 createdAt = createdAt,
-                parts = parseTwitchEmotes(message, emotes) // [emotes]
+                parts = parseTwitchEmotes(parsed.message, parsed.emotes)
             )
         }
     }
 }
+
+private data class ParsedIrcMessage(
+    val message: String,
+    val username: String,
+    val color: String?,
+    val emotes: String?
+)
 
 // [emotes] Funkcja pomocnicza do parsowania emotek Twitch
 private fun parseTwitchEmotes(

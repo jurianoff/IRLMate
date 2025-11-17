@@ -52,7 +52,7 @@ class KickChatClient(
             return null
         }
         return try {
-            val request = createKickRequest("https://kick.com/api/v2/channels/$channelName")
+            val request = createKickRequest("https://api.kick.com/public/v1/channels?slug[]=$channelName")
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     println("❌ [KickChatClient] Błąd pobierania channelId: ${response.code}")
@@ -60,7 +60,8 @@ class KickChatClient(
                 }
                 val body = response.body?.string() ?: return null
                 val json = JSONObject(body)
-                json.getString("id")
+                val channel = json.optJSONArray("data")?.optJSONObject(0)
+                channel?.optString("id")
             }
         } catch (e: Exception) {
             println("❌ [KickChatClient] Błąd pobierania channelId: ${e.message}")

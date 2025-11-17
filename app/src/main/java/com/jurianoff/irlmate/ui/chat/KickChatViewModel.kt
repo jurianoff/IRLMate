@@ -36,6 +36,9 @@ class KickChatViewModel(private val context: Context) : ViewModel(), ChatViewMod
 
     override fun updateConnectionState() {
         if (platform.isLoggedIn && platform.isEnabled) {
+            println(
+                "[KickChatVM] platform loggedIn=${platform.isLoggedIn} enabled=${platform.isEnabled}"
+            )
             connect()
             startStatusUpdates()
         } else {

@@ -116,16 +116,6 @@ class KickSessionTest {
     }
 
     @Test
-    fun `isLoggedIn should return false if chatroomId is null`() {
-        KickSession.accessToken = "token"
-        KickSession.userId = "123"
-        KickSession.username = "user"
-        KickSession.channelId = "chan"
-        KickSession.chatroomId = null
-        Assert.assertFalse(KickSession.isLoggedIn())
-    }
-
-    @Test
     fun `isLoggedIn should return false if any field is empty string`() {
         KickSession.accessToken = ""
         KickSession.userId = "123"
@@ -149,6 +139,20 @@ class KickSessionTest {
         KickSession.channelId = "chan"
         KickSession.chatroomId = ""
         Assert.assertFalse(KickSession.isLoggedIn())
+
+        KickSession.chatroomId = null
+        Assert.assertFalse(KickSession.isLoggedIn())
+    }
+
+    @Test
+    fun `isLoggedIn should allow missing chatroomId`() {
+        KickSession.accessToken = "token"
+        KickSession.userId = "123"
+        KickSession.username = "user"
+        KickSession.channelId = "chan"
+        KickSession.chatroomId = null
+
+        Assert.assertTrue(KickSession.isLoggedIn())
     }
 
     @Test
