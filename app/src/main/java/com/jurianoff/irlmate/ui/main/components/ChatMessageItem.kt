@@ -36,11 +36,13 @@ fun ChatMessageItem(
 
     val alphaAnim by animateFloatAsState(
         targetValue = if (appeared) 1f else 0f,
-        animationSpec = tween(300, easing = LinearOutSlowInEasing), label = ""
+        animationSpec = tween(300, easing = LinearOutSlowInEasing),
+        label = ""
     )
     val offsetAnim by animateDpAsState(
         targetValue = if (appeared) 0.dp else 12.dp,
-        animationSpec = tween(300, easing = LinearOutSlowInEasing), label = ""
+        animationSpec = tween(300, easing = LinearOutSlowInEasing),
+        label = ""
     )
 
     LaunchedEffect(Unit) { appeared = true }
@@ -67,7 +69,7 @@ private fun MessageRow(message: ChatMessage, modifier: Modifier) {
     }
     val textColor = Color.White
 
-    // >>>> ImageLoader dla animowanych GIF/WebP
+    // ImageLoader dla animowanych GIF/WebP
     val context = LocalContext.current
     val animatedImageLoader = remember {
         ImageLoader.Builder(context)
@@ -140,15 +142,26 @@ private fun MessageRow(message: ChatMessage, modifier: Modifier) {
                             }
                         }
                         is MessagePart.Emote -> {
-                            EmoteImage(
-                                url = part.url,
-                                fallbackUrl = part.fallbackUrl,
-                                alt = part.alt,
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .padding(horizontal = 1.dp),
-                                imageLoader = animatedImageLoader
-                            )
+                            if (part.url.isBlank()) {
+                                // Fallback: brak URL -> pokaż nazwę emote jako tekst,
+                                // żeby nie było pustej dziury w wiadomości
+                                val label = if (part.alt.isNotBlank()) part.alt else "[emote]"
+                                Text(
+                                    text = label,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = textColor
+                                )
+                            } else {
+                                EmoteImage(
+                                    url = part.url,
+                                    fallbackUrl = part.fallbackUrl,
+                                    alt = part.alt,
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .padding(horizontal = 1.dp),
+                                    imageLoader = animatedImageLoader
+                                )
+                            }
                         }
                     }
                 }
